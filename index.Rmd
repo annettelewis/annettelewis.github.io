@@ -6,6 +6,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-Here's my website 
+Here's my website.
 
 
+```{r}
+
+```
+
+## [About Me](https://annettelewis.github.io/about_me/)
