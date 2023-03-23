@@ -1,0 +1,17 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+### Hi, my name is Annette. 
+
+Here is my [resume](http://annettelewis.github.io/media/Resume.pdf)
+
+I love to play the violin in my free time, it's fun!
+
+```{r}
+knitr::include_graphics("../media/download (1).jpeg")
+```
