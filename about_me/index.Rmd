@@ -3,7 +3,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
 ### Hi, my name is Annette. 
@@ -12,6 +12,39 @@ Here is my [resume](http://annettelewis.github.io/media/Resume.pdf)
 
 I love to play the violin in my free time, it's fun!
 
-```{r}
+```{r, out.height= 400, out.width = 400}
 knitr::include_graphics("../media/download (1).jpeg")
 ```
+
+I can do coding things!
+
+Here's the mpg dataset:
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(plotly)
+mpg %>% 
+  kable() %>% 
+  kable_classic(lightable_options = 'hover') %>% 
+  scroll_box(width = "500px", height = "200px")
+
+p <- mpg %>% 
+  ggplot(aes(x= displ, y= cty)) +
+  geom_point() +
+  geom_smooth()
+ggplotly(p)
+
+round(mean(mpg$cty), 2)
+
+```
+<br><br><br>
+
+---
+The mean city miles per gallon is `r round(mean(mpg$cty), 2)` in this dataset
+
+```{bash}
+git add index.Rmd
+git commit -m "automatic"
+git push
+```
+
