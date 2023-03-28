@@ -1,0 +1,84 @@
+---
+title: "Final_project_report"
+output: html_document
+date: "2023-03-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+# Information on data:
+The following data is on New Orleans tornado building damage during December 2022. This data was obtained from Verisk Analytics and it was derived computer vision and machine learning using post-catastrophe aerial imagry data. There are approximately 42,000 buildings in this dataset. 
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(leaflet)
+library(easystats)
+library(modelr)
+library(ggmap)
+library(sf)
+library(GGally)
+```
+
+Clean data:
+
+```{r}
+df <- read.csv("clean_data.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(roofsolar = case_when(roofsolar == "SOLAR PANEL" ~ TRUE)) %>% # This column was just "yes" or "no"
+  mutate(roofshape = ifelse(roofshascr < 0.80, NA, roofshape)) %>% # I only want to include roofshapes that the computer was highly confident about
+  select(-c(roofshascr, roofcondit_discolordetect, roofcondit_discolorscore, roofcondit_discolorpercen, 
+          trampscr, roofcondit_tarppercen))
+
+df$rooftopgeo <- gsub("POINT \\(|\\)", "", df$rooftopgeo) # clear unnecessary words to obtain long and lat
+
+df <- df %>% # Lat -> y-axis; Long -> x-axis
+  separate(rooftopgeo, into = c("long", "lat"), sep = " ", convert = TRUE) # separate long and lat
+
+df$damage_level <- ifelse(df$damage_level == "", NA, df$damage_level) # Turn blank observations into NA
+```
+
+```{r}
+# These are the points with the most damage
+mostdamage <- df %>% 
+  filter(catastrophescore >= 50)
+
+leastdamage <- df %>% 
+  filter(catastrophescore < 80)
+
+damage <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=mostdamage$long, lat=mostdamage$lat) %>% 
+  addMarkers(lng=leastdamage$long, lat=leastdamage$lat)
+damage  # Print the map
+
+
+leastdamage <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=leastdamage$long, lat=leastdamage$lat)
+leastdamage
+```
+
+leaflet() %>% 
+  addProviderTiles("Stamen.Toner") %>% 
+  addPolygons(data = shape, fill = NA, color = "grey") %>% 
+  addCircleMarkers(data = points, color = "red", radius = 3)
+
+
+df$catastrophescore %>% unique()
+
+# This is a reduced version of the dataset for faster loading times
+practice <- df[1:20,]
+m <- leaflet(data = practice) %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=practice$long, lat=practice$lat, popup="Example")
+m  # Print the map
+
+# This will take the longest to load (FULL DATASET)
+n <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=df$long, lat=df$lat)
+n  # Print the map
+```
