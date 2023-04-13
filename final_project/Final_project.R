@@ -9,6 +9,8 @@ library(GGally)
 library(plotly)
 library(kableExtra)
 library(patchwork)
+library(stringr)
+library(htmltools)
 theme_set(theme_minimal())
 # sf package and even rgdal might be helpful for this, renderings and tiff files can be done with this
 
@@ -28,12 +30,26 @@ df <- df %>% # Lat -> y-axis; Long -> x-axis
 
 df$damage_level <- ifelse(df$damage_level == "", NA, df$damage_level) # Turn blank observations into NA
 
-df %>% 
-  select(-buildings_ids, -geometry, -damage_level) %>% 
-  ggpairs(cardinality_threshold = 45000)
+# df %>%
+#   kable() %>%
+#   kable_classic(lightable_options = "hover") %>%
+#   scroll_box(height = "200px")
+# 
+# df %>%
+#   mutate(building_id_short = substr(buildings_ids, 1, 30)) %>%
+#   select(building_id_short, everything()) %>%
+#   kable() %>%
+#   kable_classic(lightable_options = "hover") %>%
+#   scroll_box(height = "200px")
 
-#----------------------------------------------------------------
+df %>%
+  mutate(building_id_short = substr(buildings_ids, 1, 30)) %>%
+  select(building_id_short, everything()) %>%
+  kable() %>%
+  kable_classic(lightable_options = "hover") %>%
+  scroll_box(height = "200px")
 
+# Define damage categories for mapping
 mostdamage <- df %>% filter(catastrophescore >= 50)
 nodamage <- df %>% filter(catastrophescore == 0)
 decimated <-df %>% filter(catastrophescore == 100)
@@ -41,104 +57,150 @@ middamage <- df %>% filter(catastrophescore < 50 & catastrophescore >= 15)
 leastdamage <- df %>% filter(catastrophescore < 15 & catastrophescore >= 2)
 minimaldamage <- df %>% filter(catastrophescore == 1)
 
-# Maps
+# Function for adding labels (it seems like popup is the only option for circleMarkers, at least out of what I tried)
+create_popup <- function(data) {
+  paste("<b>Location</b><br>",
+        "&nbsp;&nbsp;&nbsp;Longitude: ", data$long, "<br>",
+        "&nbsp;&nbsp;&nbsp;Latitude: ", data$lat, "<br>",
+        "<b>Catastrophe Score</b><br>",
+        "&nbsp;&nbsp;&nbsp;Score: ", data$catastrophescore, "<br>",
+        "<b>Roof Shape</b><br>",
+        "&nbsp;&nbsp;&nbsp;Shape: ", str_to_title(data$roofshape), "<br>",
+        "<b>Roof Material</b><br>",
+        "&nbsp;&nbsp;&nbsp;Material: ", str_to_title(data$roofmateri), "<br>")
+}
+
+# Maps: First, representing data points
 alldamage <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2) %>%
-  addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2) %>%
-  addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2) %>%
-  addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5)
-alldamage
+  addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2, popup = create_popup(mostdamage)) %>%
+  addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2, popup = create_popup(middamage)) %>%
+  addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2, popup = create_popup(leastdamage)) %>%
+  addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5, popup = create_popup(nodamage))
 
 damage <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2) %>% 
-  addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2) %>% 
-  addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2)
+  addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2, popup = create_popup(mostdamage)) %>% 
+  addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2, popup = create_popup(middamage)) %>% 
+  addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2, popup = create_popup(leastdamage))
+
+alldamage
 damage
 
+# Individual damage categories
 high <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2)
-high
+  addCircleMarkers(lng = mostdamage$long, lat = mostdamage$lat, color = "red", radius = 2, 
+                   popup = create_popup(mostdamage))
 
 mid <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2)
-mid
+  addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2,
+                   popup = create_popup(middamage))
 
 least <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2)
-least
+  addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2,
+                   popup = create_popup(leastdamage))
 
 none <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5)
-none
+  addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5,
+                   popup = create_popup(nodamage))
 
 destroyed <- leaflet() %>%
   addTiles() %>%
-  addCircleMarkers(lng=decimated$long, lat=decimated$lat, color = "maroon", radius = 2)
+  addCircleMarkers(lng=decimated$long, lat=decimated$lat, color = "maroon", radius = 2,
+                   popup = create_popup(decimated))
+
+high
+mid
+least
+none
 destroyed
 
 # Models:
-mod1 <- df %>% glm(formula = catastrophescore ~ long + lat + roofshape + rooftree + roofmateri, family = "gaussian")
-mod2 <- df %>% glm(formula = catastrophescore ~ long + lat + trampoline + deck + pool + enclosure + divingboar + waterslide + playground + sportcourt + primarystr + roofsolar + rooftree + roofmateri * roofshape, family = "gaussian")
+mod1 <- df %>% glm(formula = catastrophescore ~ long + lat + rooftree + roofshape, family = "gaussian")
+mod2 <- df %>% glm(formula = catastrophescore ~ long + lat + roofshape + rooftree + roofmateri, family = "gaussian")
+mod3 <- df %>% glm(formula = catastrophescore ~ long + lat + trampoline + deck + pool + enclosure + divingboar + waterslide + playground + sportcourt + primarystr + roofsolar + rooftree + roofmateri * roofshape, family = "gaussian")
 mod3 <- df %>% glm(formula = catastrophescore ~ long + lat + enclosure + roofmateri + roofsolar + rooftree + roofshape, family = "gaussian")
+mod4 <- df %>% glm(formula = catastrophescore ~ long + lat + roofshape + rooftree + roofmateri + trampoline * deck * pool * enclosure * divingboar * waterslide * playground * sportcourt * primarystr * roofsolar, family = "gaussian")
+mod5 <- df %>% glm(formula = catastrophescore ~ long + lat + trampoline * deck * pool * enclosure * divingboar * waterslide * playground * sportcourt * primarystr * roofsolar + roofmateri + roofshape + rooftree, family = "gaussian")
 
-formula(mod1)
-formula(mod2)
-formula(mod3)
+compare_performance(mod1, mod2, mod3, mod4, mod5) %>% plot()
+compare_performance(mod1, mod2, mod3, mod4, mod5)
+
+check_model(mod3)
+check_model(mod4)
+check_model(mod5)
+
+rmse(mod1, df)
+rmse(mod2, df)
+rmse(mod3, df)
+rmse(mod4, df)
+rmse(mod5, df)
+rmse(mod6, df)
+
+# Function for root median square error (Do I want to keep this in here?)
+r_med_sq_err <- function(model, absolute = FALSE){ # adding in the option for an absolute error
+  if(sum(class(model) %in% c("glm","lm")) > 0){
+    if(absolute == TRUE){
+      median(abs(residuals(model)))
+    }
+    sqrt(median(residuals(model)^2))
+  } else {
+    if(class(model) == "list"){
+      stop("Did you provide a list of models? Use map() instead.")
+    }
+    stop("'model' must be either a glm or lm object.")
+  }
+} 
+
+r_med_sq_err(mod1)
+df
+unique(df$roofshape)
+# df$roofmateri <- factor(df$roofmateri, levels = levels(mod3$model$roofmateri))
 
 
-leastdamage <- df %>% 
-  filter(catastrophescore < 80)
-
-leastdamage <- leaflet() %>%
-  addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(lng=leastdamage$long, lat=leastdamage$lat)
-leastdamage
 
 
-leaflet() %>% 
-  addProviderTiles("Stamen.Toner") %>% 
-  addPolygons(data = shape, fill = NA, color = "grey") %>% 
-  addCircleMarkers(data = points, color = "red", radius = 3)
+# df$roofmateri <- factor(df$roofmateri, levels = c("metal", "shingle", "membrane", "shake", "tile", "gravel"))
+# df$roofshape <- factor(df$roofshape, levels = c("gable", "hip", "flat"))
+# 
+# # create a factor with the same levels as in the model
+# df$roofmateri <- factor(df$roofmateri, levels = levels(mod3$model$roofmateri))
 
 
-df$catastrophescore %>% unique()
-
-# This is a reduced version of the dataset for faster loading times
-practice <- df[1:20,]
-m <- leaflet(data = practice) %>%
-  addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(lng=practice$long, lat=practice$lat, popup="Example")
-m  # Print the map
-
-# This will take the longest to load (FULL DATASET)
-n <- leaflet() %>%
-  addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(lng=df$long, lat=df$lat)
-n  # Print the map
 
 
-mod1 <- df %>% glm(formula = catastrophescore ~ long*lat + roofshape, family = "binomial")
-# I think my next goal is to separate the damage levels and characterization of the state
+compare_performance(mod1, mod2, mod3, mod4, mod5) %>% plot()
+compare_performance(mod4, mod5, mod6) %>% plot()
+compare_performance(mod3, mod4, mod5, mod6) %>% plot()
 
-mutate
+compare_performance(mod1, mod2, mod3, mod4) %>% plot()
+
+testing <- sample(1:nrow(df), size = round(nrow(df)*.2))
+test <- df[testing,]
+train <- df[-testing,]
+
+mod1 <- glm(data = train,
+            formula = mod$formula)
+mod2 <- glm(data = train,
+            formula = mod$formula)
+mod3 <- glm(data = train,
+            formula = mod$formula)
+mod4 <- glm(data = train,
+            formula = mod$formula)
+mod5 <- glm(data = train,
+            formula = mod$formula)
+
 
 df %>% 
-  ggplot(aes(x=b_imgdate, y=roofcondit_structuraldamagepercen, color = damage_level)) +
+  ggplot(aes(x=rooftree, y=catastrophescore, color = damage_level)) +
   geom_point() +
   facet_wrap(~roofmateri)
 
 
-df$damage_level %>% unique()
-
-roofcondit <- df %>% 
-  select(starts_with("roofcondit_"), buildings_ids, damage_level)
-names(df$roofcondit) <- c(paste0("visit",1:(ncol(bp)-1)), "pat_id")
 #-------example code for what I want to modify (separate roofconditions to )
 bp <- df %>% 
   select(starts_with("bp_"), pat_id)
@@ -156,19 +218,6 @@ roofcondit <- df %>%
   select(starts_with("roofcondit_"), buildings_ids)
 names(bp) <- c(paste0("visit",1:(ncol(bp)-1)), "pat_id")
 
-# This shows correlations of the most damage caused (trying to see if there's any common threads)
-ggpairs(mostdamage, columns = , cardinality_threshold = 500)
-
-count <- mostdamage[,16:30]
-ggpairs(count, cardinality_threshold = 500)
-ggpairs(roofcondit, cardinality_threshold = 40000)
-
-
-
-
-df %>% 
-  select(long, lat, roofmateri, roofshape, catastrophescore) %>% 
-  ggpairs(cardinality_threshold = 40000)
 
 df %>% 
   ggplot(aes(x=c(lat,long), y=catastrophescore, color = damage_level)) +
@@ -182,64 +231,7 @@ ggplot(df_grouped, aes(x = roofcondit, y = catastrophescore, color = roofshape))
   geom_point() +
   facet_wrap(~ roofmateri)
 
-
-
-
-
-df$b_imgdate %>%  unique()
-
-
-#Replace na values with blank using is.na()
-df[is.na()] <- ""
-
-#Display the dataframe
-print(my_dataframe)
-
-
-df$damage_level %>% class()
-
-# first standardize the spatial objects
-points <- sf::st_as_sf(points, coords = c("x", "y"), crs = 4326)
-shape <- sf::st_transform(shape, crs = 4326)
-
-# and then plot them
-leaflet() %>% 
-  addProviderTiles("Stamen.Toner") %>% 
-  addPolygons(data = shape, fill = NA, color = "grey") %>% 
-  addCircleMarkers(data = points, color = "red", radius = 3)
-
-df$roofsolar %>%unique()
-
-df %>% ggmap(rooftopgeo)
-
-
-# library(GGally)
-# ggpairs(df, columns = !c(building_ids, b_imgdate, ), cardinality_threshold = 45000)
-
-df %>%
-  leaflet(data = rooftopgeo)
-
-m <- leaflet() %>% setView(lng = -71.0589, lat = 42.3601, zoom = 12)
-m %>% addTiles()
-
-ggmap()
-
-
-
-
 pls <- df[,2:30]
-ggpairs(pls, cardinality_threshold = 4500)
-
-pls <- pls %>% select(trampscr, long, lat, roofshascr, roofcondit, 
-                      rooftree, catastrophescore, roofcondit_structuraldamagepercen, 
-                      roofcondit_missingmaterialpercen, roofcondit_debrispercent, 
-                      roofcondit_discolorpercen, roofcondit_discolorscore, damage_level)
-names(df)
-df %>% select(lat, long, poolarea, trampoline, deck, pool, enclosure, divingboar, waterslide, playground, sportcourt, primarystr, catastrophescore) %>% 
-  ggpairs()
-
-song %>% select(rooftopgeo, poolarea, trampoline, deck, pool, enclosure, divingboar, waterslide, playground, sportcourt, primarystr, catastrophescore) %>% 
-  ggpairs(cardinality_threshold = 45000)
 
 # group long and lat together
 grouped_pls <- pls %>% 
@@ -247,10 +239,80 @@ grouped_pls <- pls %>%
   summarise_all(mean) %>% 
   ungroup()
 
-# plot pairwise scatter plots
-df %>% 
-  select(-buildings_ids) %>% 
-  ggpairs(cardinality_threshold = 4500)
+# Give a story from the data and present it as a report (with background and why its interesting, talk about data, talk about conclusion, use data and point)
+
+# Predictions:
+
+# I'm planning to add predictions and additional plots for the completed final project.
+
+# Interpretations of predictions and models used:
+
+# This will also be updated.
+
+add_predictions(df, mod1, type = "response")
+gather_predictions(mod1a,mod2,mod3)
+df %>% add_predictions(mod1, mod2, mod3)
+
+add_predictions(tidy, mod1, mod2, mod3) %>%
+  ggplot(aes(x=gpa, y=pred, color =admit)) + 
+  geom_point(size = 3, alpha =.5)
 
 
-ggpairs(pls, cardinality_threshold = 4500)
+# Example of analysis I could do
+df <- add_predictions(penguins, mod)
+df <- add_residuals(df,mod)
+# to decide if the model fits well with reality (check model allows us to check the model assumptions)
+# use easystats
+library(easystats)
+performance(mod) # the R2 value is pretty high (about 270g off)
+# RMSE is only useful in comparing with other models
+# The R2 of 0.885 is only on model 2, but this value is based on main information
+
+# Make a new penguin
+# This is for if you find a new observation/do another experiment with the same base as the model
+# make a new dataframe
+names(penguins) 
+
+new_penguin <- data.frame(sex = "male", 
+                          species = "Gentoo",
+                          island = "Biscoe",
+                          bill_length_mm = 1000,
+                          bill_depth_mm = 1000,
+                          flipper_length_mm = 1)
+add_predictions(new_penguin, model = mod)
+# Here, we are extrapolating. We are predicting data that's outside of the scope of our model
+# The largest body mass in the model is 6300g but our prediction says the penguin is going to be 93044g
+# Make sure that the predictions that I am feeding in match the values I've already given to the model
+# The model is only good within its limited scope
+
+# Crossvalidation (remove some of the data, take it away, and save it, comparing it to the testing dataset)
+# Testing dataset gets set aside until the end
+# Training dataset is for model building
+
+penguins # we want to randomly choose 20% of the rows (testing dataset)
+set.seed(69) # allowed us to have the same random selection in class
+
+
+
+add_residuals(test, mod2) %>% 
+  pluck("resid") %>% 
+  .^2 %>% 
+  mean(na.rm = TRUE) %>% 
+  sqrt()
+rmse(mod) # Same thing as above, but just for the new testing prediction :)
+
+# Which is the model that we should report in the model
+# How believable is our model based on data it hasn't seen before
+# performance(mod2, newdata = test) there was a mistake in this
+rsquare(mod2,test) # test model: the model is this good when we see new things
+rsquare(mod, penguins)# full model 
+
+performance(mod)
+
+
+list(mod1, mod2, mod3, mod4) %>% 
+  map_dbl(r_med_sq_err) # dbl gives the four models, like dbl, gives the rmse for everything
+source("../myfunctions.R") # allows to pull functions from another script
+
+
+
