@@ -19,7 +19,7 @@ I love to play the violin in my free time, it's fun!
 knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 ```
 
-# I can do coding things!
+### I can do coding things!
 
 Here's the mpg dataset:
 ```{r message=FALSE, include=TRUE}
@@ -45,7 +45,7 @@ round(mean(mpg$cty), 2)
 ---
 The mean city miles per gallon is **`r round(mean(mpg$cty), 2)`** in this dataset
 
-```{bash}
+```{bash, message = FALSE, include = FALSE}
 git add index.Rmd
 git commit -m "automatic"
 git push
