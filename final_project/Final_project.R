@@ -11,6 +11,9 @@ library(kableExtra)
 library(patchwork)
 library(stringr)
 library(htmltools)
+library(devtools)
+library(htmlwidgets)
+library(webshot)
 theme_set(theme_minimal())
 # sf package and even rgdal might be helpful for this, renderings and tiff files can be done with this
 
@@ -71,12 +74,22 @@ create_popup <- function(data) {
 }
 
 # Maps: First, representing data points
+#### In my maps, I probably want to use a legend for the ones that show multiple points
 alldamage <- leaflet() %>%
   addTiles() %>%
   addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2, popup = create_popup(mostdamage)) %>%
   addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2, popup = create_popup(middamage)) %>%
   addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2, popup = create_popup(leastdamage)) %>%
   addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5, popup = create_popup(nodamage))
+
+# Save as HTML file
+saveWidget(alldamage, "alldamage_map.html", selfcontained = FALSE)
+
+# Generate the iframe tag
+iframe_tag <- tags$iframe(src = "alldamage_map.html", width = "100%", height = 500)
+
+# Display the iframe tag
+iframe_tag
 
 damage <- leaflet() %>%
   addTiles() %>%
@@ -136,7 +149,7 @@ check_model(mod5)
 
 rmse(mod1, df)
 rmse(mod2, df)
-rmse(mod3, df)
+rmse(mod3, df) # Here is where I encounter an error (need to fix up the factors, but it needs to fit in for the other models I have)
 rmse(mod4, df)
 rmse(mod5, df)
 rmse(mod6, df)
