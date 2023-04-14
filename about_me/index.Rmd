@@ -15,7 +15,7 @@ Here is my [resume](http://annettelewis.github.io/media/Resume.pdf)
 
 I love to play the violin in my free time, it's fun!
 
-```{r, out.height= 600, out.width = 400}
+```{r, out.height= 300, out.width = 200}
 knitr::include_graphics("../media/professional_photo.jpeg")
 ```
 
