@@ -14,7 +14,9 @@ pagetitle: final_project_report
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
-# Information on data:
+## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
+
+## Information on data:
 The following data is on New Orleans tornado building damage during December 2022. This data was obtained from Verisk Analytics and it was derived computer vision and machine learning using post-catastrophe aerial imagry data. There are approximately 42,000 buildings in this dataset. 
 
 ---
@@ -40,7 +42,7 @@ library(devtools)
 theme_set(theme_minimal())
 ```
 
-# Clean data:
+## Clean data:
 
 I converted roof_solar into a T/F statement, by converting "SOLAR PANEL" to TRUE and "NO SOLAR PANEL" to FALSE. In addition to this, I converted the roof shapes that the computer wasn't very sure about (up to a 20% chance of being incorrect) into NA. There were some cells in damage_level where they were filled with an empty character, so I converted that into NA as well. I then separated longitude and latitude so that it could be easily read into leaflet. 
 
@@ -68,7 +70,7 @@ df$damage_level <- ifelse(df$damage_level == "", NA, df$damage_level)
 #   scroll_box(height = "200px")
 ```
 
-# Define damage categories:
+## Define damage categories:
 
 Catastrophe scores are separated by the summary of the dataset, excluding the catastrophe scores of 0.
 
@@ -97,7 +99,7 @@ create_popup <- function(data) {
 }
 ```
 
-# Damage maps:
+## Damage maps:
 
 This shows all of the damage points, the vast majority of roofs have no damage.
 
@@ -200,7 +202,7 @@ destroyed
 
 ---
 
-# Models:
+## Models:
 
 ```{r}
 # mod1 <- df %>% glm(formula = catastrophescore ~ long + lat + rooftree + roofshape, family = "gaussian")
@@ -222,7 +224,7 @@ formula(mod4)
 formula(mod5)
 ```
 
-# Check models 
+## Check models 
 
 Model 3
 
@@ -244,12 +246,12 @@ check_model(mod5)
 
 ---
 
-# Predictions:
+## Predictions:
 
 I'm planning to add predictions and additional plots for the completed final project.
 
 ---
 
-# Interpretations of predictions and models used:
+## Interpretations of predictions and models used:
 
 This will also be updated.
