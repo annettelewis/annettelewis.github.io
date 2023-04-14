@@ -22,7 +22,7 @@ knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 I can do coding things!
 
 Here's the mpg dataset:
-```{r message=TRUE, include=FALSE}
+```{r message=TRUE, include=TRUE}
 library(tidyverse)
 library(kableExtra)
 library(plotly)
