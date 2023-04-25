@@ -14,6 +14,8 @@ library(htmltools)
 library(devtools)
 library(htmlwidgets)
 library(webshot)
+# I NEED TO HAVE A MYFUNCTIONS FOLDER IF I WANT TO USE IT LIKE THIS :/
+# source("../myfunctions.R") # allows to pull functions from another script (I could use this, but I would want to change my markdown file to do this...)
 theme_set(theme_minimal())
 # sf package and even rgdal might be helpful for this, renderings and tiff files can be done with this
 
@@ -32,12 +34,15 @@ df <- df %>% # Lat -> y-axis; Long -> x-axis
   separate(rooftopgeo, into = c("long", "lat"), sep = " ", convert = TRUE) # separate long and lat
 
 df$damage_level <- ifelse(df$damage_level == "", NA, df$damage_level) # Turn blank observations into NA
-
+df$roofshape <- factor(df$roofshape, levels = c("gable", "hip", "flat"))
+levels_roofmateri <- c("metal", "shingle", "membrane", "shake", "tile")
+df$roofmateri <- factor(df$roofmateri, levels = c("gravel", levels_roofmateri))
+df$roofmateri <- factor(df$roofmateri, levels = levels_roofmateri)
 # df %>%
 #   kable() %>%
 #   kable_classic(lightable_options = "hover") %>%
 #   scroll_box(height = "200px")
-# 
+
 # df %>%
 #   mutate(building_id_short = substr(buildings_ids, 1, 30)) %>%
 #   select(building_id_short, everything()) %>%
@@ -60,6 +65,7 @@ middamage <- df %>% filter(catastrophescore < 50 & catastrophescore >= 15)
 leastdamage <- df %>% filter(catastrophescore < 15 & catastrophescore >= 2)
 minimaldamage <- df %>% filter(catastrophescore == 1)
 
+# I COULD PROBABLY GET RID OF THIS 
 # Function for adding labels (it seems like popup is the only option for circleMarkers, at least out of what I tried)
 create_popup <- function(data) {
   paste("<b>Location</b><br>",
@@ -73,6 +79,21 @@ create_popup <- function(data) {
         "&nbsp;&nbsp;&nbsp;Material: ", str_to_title(data$roofmateri), "<br>")
 }
 
+# # Function for root median square error
+r_med_sq_err <- function(model, absolute = FALSE){ # adding in the option for an absolute error
+  if(sum(class(model) %in% c("glm","lm")) > 0){
+    if(absolute == TRUE){
+      median(abs(residuals(model)))
+    }
+    sqrt(median(residuals(model)^2))
+  } else {
+    if(class(model) == "list"){
+      stop("Did you provide a list of models? Use map() instead.")
+    }
+    stop("'model' must be either a glm or lm object.")
+  }
+}
+
 # Maps: First, representing data points
 #### In my maps, I probably want to use a legend for the ones that show multiple points
 alldamage <- leaflet() %>%
@@ -82,14 +103,14 @@ alldamage <- leaflet() %>%
   addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2, popup = create_popup(leastdamage)) %>%
   addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5, popup = create_popup(nodamage))
 
-# Save as HTML file
-saveWidget(alldamage, "alldamage_map.html", selfcontained = FALSE)
+# # Save as HTML file
+# saveWidget(alldamage, "alldamage_map.html", selfcontained = FALSE)
 
-# Generate the iframe tag
-iframe_tag <- tags$iframe(src = "alldamage_map.html", width = "100%", height = 500)
+# # Generate the iframe tag
+# iframe_tag <- tags$iframe(src = "alldamage_map.html", width = "100%", height = 500)
 
-# Display the iframe tag
-iframe_tag
+# # Display the iframe tag
+# iframe_tag
 
 damage <- leaflet() %>%
   addTiles() %>%
@@ -141,12 +162,23 @@ mod4 <- df %>% glm(formula = catastrophescore ~ long + lat + roofshape + rooftre
 mod5 <- df %>% glm(formula = catastrophescore ~ long + lat + trampoline * deck * pool * enclosure * divingboar * waterslide * playground * sportcourt * primarystr * roofsolar + roofmateri + roofshape + rooftree, family = "gaussian")
 
 compare_performance(mod1, mod2, mod3, mod4, mod5) %>% plot()
-compare_performance(mod1, mod2, mod3, mod4, mod5)
+compare_performance(mod3, mod4, mod5) %>% plot()
 
-check_model(mod3)
+# check_model(mod1)
+# check_model(mod2)
+check_model(mod3) # shows a decent level of collinearity.... I don't know though fam...
 check_model(mod4)
 check_model(mod5)
 
+# It might be worth putting this in my cleaning code:
+  # this doesn't fix my rmse values after 3 (it actually even just makes it worse)
+df$roofmateri <- factor(df$roofmateri, levels = c("metal", "shingle", "membrane", "shake", "tile", "gravel"))
+df$roofshape <- factor(df$roofshape, levels = c("gable", "hip", "flat"))
+# 
+# # create a factor with the same levels as in the model
+df$roofmateri <- factor(df$roofmateri, levels = levels(mod3$model$roofmateri))
+
+# NEXT step is to figure out what's going wrong with this...
 rmse(mod1, df)
 rmse(mod2, df)
 rmse(mod3, df) # Here is where I encounter an error (need to fix up the factors, but it needs to fit in for the other models I have)
@@ -154,103 +186,124 @@ rmse(mod4, df)
 rmse(mod5, df)
 rmse(mod6, df)
 
-# Function for root median square error (Do I want to keep this in here?)
-r_med_sq_err <- function(model, absolute = FALSE){ # adding in the option for an absolute error
-  if(sum(class(model) %in% c("glm","lm")) > 0){
-    if(absolute == TRUE){
-      median(abs(residuals(model)))
-    }
-    sqrt(median(residuals(model)^2))
-  } else {
-    if(class(model) == "list"){
-      stop("Did you provide a list of models? Use map() instead.")
-    }
-    stop("'model' must be either a glm or lm object.")
-  }
-} 
-
+# Median square error for all of the models:
 r_med_sq_err(mod1)
-df
-unique(df$roofshape)
-# df$roofmateri <- factor(df$roofmateri, levels = levels(mod3$model$roofmateri))
-
-
-
-
-# df$roofmateri <- factor(df$roofmateri, levels = c("metal", "shingle", "membrane", "shake", "tile", "gravel"))
-# df$roofshape <- factor(df$roofshape, levels = c("gable", "hip", "flat"))
-# 
-# # create a factor with the same levels as in the model
-# df$roofmateri <- factor(df$roofmateri, levels = levels(mod3$model$roofmateri))
-
-
-
+r_med_sq_err(mod2)
+r_med_sq_err(mod3) # appears to have the lowest med sqr error out ove everything
+r_med_sq_err(mod4)
+r_med_sq_err(mod5)
 
 compare_performance(mod1, mod2, mod3, mod4, mod5) %>% plot()
 compare_performance(mod4, mod5, mod6) %>% plot()
 compare_performance(mod3, mod4, mod5, mod6) %>% plot()
 
-compare_performance(mod1, mod2, mod3, mod4) %>% plot()
+compare_performance(mod1, mod2, mod3, mod4, modm1) %>% plot() # adding chaos here...
 
+# Now, this is a basic setup for testing models ;)
 testing <- sample(1:nrow(df), size = round(nrow(df)*.2))
-test <- df[testing,]
-train <- df[-testing,]
 
-mod1 <- glm(data = train,
-            formula = mod$formula)
-mod2 <- glm(data = train,
-            formula = mod$formula)
-mod3 <- glm(data = train,
-            formula = mod$formula)
-mod4 <- glm(data = train,
-            formula = mod$formula)
-mod5 <- glm(data = train,
-            formula = mod$formula)
+#Now, if I just reallly messed wiht this... I could get this:
+messing <- df %>% filter(df$catastrophescore != 0) # I actually probably do want to use this.... 
 
+library(GGally)
+
+# may be even worth making some models for even just the prescence of damage and not jsut its magnitude... there is so much that isn't accounted for
+messing %>% 
+  select(-buildings_ids) %>% 
+  ggpairs()
+
+# This shows another representation of the data points (map w/o leaflet)
+# I would want to change the colors (they don't match well)
+messing %>% 
+  ggplot(aes(x=long, y=lat, color = damage_level)) +
+  geom_point()
+# based on long and lat, respectively. i would want to remove the NA
+df %>% 
+  ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofmateri)
 
 df %>% 
+  ggplot(aes(x=lat, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofmateri)
+
+df %>% 
+  ggplot(aes(x=rooftree, y=catastrophescore, color = damage_level)) +
+  geom_point()
+
+df %>% 
+  filter(na.rm(df$poolarea)) %>% 
+  ggplot(aes(x=poolarea, y=catastrophescore)) +
+  geom_point()
+
+df %>% 
+  ggplot(aes(x=catastrophescore, y=roofcondit_missingmaterialpercen, color = damage_level)) +
+  geom_point()
+
+messing %>% 
+  ggplot(aes(x=catastrophescore, y=roofcondit_structuraldamagepercen, color = damage_level)) +
+  geom_point()
+
+# messing %>% 
+#   ggplot(aes(x=rooftree, y=roofcondit_debrispercent, color = damage_level)) +
+#   geom_point()
+
+testing <- (1:nrow(messing), size = round(nrow(messing)*.2))
+
+
+test <- df[testing,]
+train <- df[-testing,]
+# Actually not horrible... it def gets messy when i add more points that likely dont relate
+modm1 <- glm(messing, family = gaussian, formula = catastrophescore ~ roofmateri + roofshape + long + lat + roofsolar + trampoline + rooftree + waterslide + deck + pool + divingboar + playground + primarystr + enclosure + sportcourt)
+check_model(modm1)
+names(messing)
+performance(modm1)
+# mod1 <- glm(data = train,
+#             formula = mod1$formula)
+# mod2 <- glm(data = train,
+#             formula = mod2$formula)
+mod3 <- glm(data = train,
+            formula = mod3$formula) # let's see what this does....
+# mod4 <- glm(data = train,
+#             formula = mod4$formula)
+# mod5 <- glm(data = train,
+#             formula = mod5$formula)
+
+# I probably want to make a graph... 
+df %>% 
+  # filter(catastrophescore != 0) %>% 
   ggplot(aes(x=rooftree, y=catastrophescore, color = damage_level)) +
   geom_point() +
   facet_wrap(~roofmateri)
 
-
-#-------example code for what I want to modify (separate roofconditions to )
-bp <- df %>% 
-  select(starts_with("bp_"), pat_id)
-names(bp) <- c(paste0("visit",1:(ncol(bp)-1)), "pat_id")
-
-bp <- bp %>% 
-  pivot_longer(starts_with("visit"),
-               names_to = "visit",
-               names_prefix = "visit",
-               names_transform = as.numeric) %>% 
-  separate(value, into = c('systolic', 'diastolic'), convert = TRUE)
+df %>% 
+  ggplot(aes(x=lat, catastrophescore, color = )) +
+  geom_point()
+unique(df$damage_level)
 #---------------------------
-
 roofcondit <- df %>% 
   select(starts_with("roofcondit_"), buildings_ids)
 names(bp) <- c(paste0("visit",1:(ncol(bp)-1)), "pat_id")
 
+# df %>% 
+#   ggplot(aes(x=c(lat,long), y=catastrophescore, color = damage_level)) +
+#   geom_line() +
+#   facet_wrap(~roofshape)
 
-df %>% 
-  ggplot(aes(x=c(lat,long), y=catastrophescore, color = damage_level)) +
-  geom_line() +
-  facet_wrap(~roofshape)
-
+# This is funtional, but I would actually need to find something that works better
 df_grouped <- df %>%
   group_by(lat, long)
 
 ggplot(df_grouped, aes(x = roofcondit, y = catastrophescore, color = roofshape)) +
-  geom_point() +
+  geom_() +
   facet_wrap(~ roofmateri)
 
-pls <- df[,2:30]
-
-# group long and lat together
-grouped_pls <- pls %>% 
-  group_by(long, lat) %>% 
-  summarise_all(mean) %>% 
-  ungroup()
+# pls <- df[,2:30]
+# 
+#  group long and lat together
+# grouped_pls <- pls %>% 
+#   group_by(long, lat) %>% 
+#   summarise_all(mean) %>% 
+#   ungroup()
 
 # Give a story from the data and present it as a report (with background and why its interesting, talk about data, talk about conclusion, use data and point)
 
@@ -260,16 +313,24 @@ grouped_pls <- pls %>%
 
 # Interpretations of predictions and models used:
 
-# This will also be updated.
+# The predictions: 
 
-add_predictions(df, mod1, type = "response")
-gather_predictions(mod1a,mod2,mod3)
+pred <- add_predictions(df, mod, type = "response")
+
+#adding tidy in front of gather predictons like this or something... im not sure...
+gather_predictions(tidy,mod1,mod2,mod3)
 df %>% add_predictions(mod1, mod2, mod3)
 
 add_predictions(tidy, mod1, mod2, mod3) %>%
   ggplot(aes(x=gpa, y=pred, color =admit)) + 
   geom_point(size = 3, alpha =.5)
 
+add_residuals(test, mod2) %>% 
+  pluck("resid") %>% 
+  .^2 %>% 
+  mean(na.rm = TRUE) %>% 
+  sqrt()
+rmse(mod) # Same thing as above, but just for the new testing prediction :)
 
 # Example of analysis I could do
 df <- add_predictions(penguins, mod)
@@ -305,14 +366,12 @@ add_predictions(new_penguin, model = mod)
 penguins # we want to randomly choose 20% of the rows (testing dataset)
 set.seed(69) # allowed us to have the same random selection in class
 
-
-
 add_residuals(test, mod2) %>% 
   pluck("resid") %>% 
   .^2 %>% 
   mean(na.rm = TRUE) %>% 
   sqrt()
-rmse(mod) # Same thing as above, but just for the new testing prediction :)
+rmse(mod2, df) # Same thing as above, but just for the new testing prediction :)
 
 # Which is the model that we should report in the model
 # How believable is our model based on data it hasn't seen before
@@ -322,10 +381,10 @@ rsquare(mod, penguins)# full model
 
 performance(mod)
 
-
 list(mod1, mod2, mod3, mod4) %>% 
   map_dbl(r_med_sq_err) # dbl gives the four models, like dbl, gives the rmse for everything
 source("../myfunctions.R") # allows to pull functions from another script
 
-
-
+# Coinflip
+rbinom(prob = 0.5, size =100, n =10) %>% # 100 trials, 10 times each
+  hist() # and this shows it

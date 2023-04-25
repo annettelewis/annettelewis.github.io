@@ -8,6 +8,7 @@ output:
     self_contained: yes
     keep_md: no
 pagetitle: final_project_report
+
 ---
 
 ```{r setup, include=FALSE}
@@ -37,16 +38,62 @@ library(patchwork)
 library(stringr)
 library(htmltools)
 library(devtools)
+library(car)
 # library(htmlwidgets)
 # library(webshot2)
 theme_set(theme_minimal())
+```
+
+Here are some before and after photos of three buildings 
+
+```{r}
+HTML('
+<link href="./twentytwenty.css" rel="stylesheet" type="text/css" />
+<p> This is totally a building bro; 100 </p>
+<div style="width:700px;">
+		<div class="twentytwenty-container">
+			<img style="width:700px;" src="./maps/location-1-before.jpeg" />
+			<img style="width:700px;"src="./maps/location-1-after.jpeg" />
+		</div>
+	</div>
+	<br>
+<p> This is totally another building bro 100</p>
+<div style="width:700px;">
+		<div class="twentytwenty-container">
+			<img style="width:700px;" src="./maps/location-2-before.jpeg" />
+			<img style="width:700px;"src="./maps/location-2-after.jpeg" />
+		</div>
+	</div>
+	<br>
+<p> This is totally another another building bro catastrophescore fo 60 </p>
+<div style="width:700px;">
+		<div class="twentytwenty-container">
+			<img style="width:700px;" src="./maps/location-4-before.jpeg" />
+			<img style="width:700px;"src="./maps/location-4-after.jpeg" />
+		</div>
+	</div>
+')
+```
+
+```{r, echo = FALSE, results = 'asis'}
+cat('<script src="./jquery.event.move.js"></script>')
+cat('<script src="./jquery.twentytwenty.js"></script>')
+```
+
+
+
+```{js}
+  $(function(){
+	$(".twentytwenty-container[data-orientation!='vertical']").twentytwenty({default_offset_pct: 0.7});
+	$(".twentytwenty-container[data-orientation='vertical']").twentytwenty({default_offset_pct: 0.3, orientation: 'vertical'});
+  });
 ```
 
 ## Clean data:
 
 I converted roof_solar into a T/F statement, by converting "SOLAR PANEL" to TRUE and "NO SOLAR PANEL" to FALSE. In addition to this, I converted the roof shapes that the computer wasn't very sure about (up to a 20% chance of being incorrect) into NA. There were some cells in damage_level where they were filled with an empty character, so I converted that into NA as well. I then separated longitude and latitude so that it could be easily read into leaflet. 
 
-```{r}
+```{r, echo=TRUE}
 df <- read.csv("clean_data.csv") %>% 
   janitor::clean_names() %>% 
   mutate(roofsolar = case_when(roofsolar == "SOLAR PANEL" ~ TRUE)) %>%
@@ -59,6 +106,10 @@ df <- df %>%
   separate(rooftopgeo, into = c("long", "lat"), sep = " ", convert = TRUE)
 
 df$damage_level <- ifelse(df$damage_level == "", NA, df$damage_level)
+df$roofshape <- factor(df$roofshape, levels = c("gable", "hip", "flat"))
+levels_roofmateri <- c("metal", "shingle", "membrane", "shake", "tile")
+df$roofmateri <- factor(df$roofmateri, levels = c("gravel", levels_roofmateri))
+df$roofmateri <- factor(df$roofmateri, levels = levels_roofmateri)
 ```
 ---
 
@@ -68,12 +119,27 @@ df$damage_level <- ifelse(df$damage_level == "", NA, df$damage_level)
 #   kable() %>%
 #   kable_classic(lightable_options = "hover") %>%
 #   scroll_box(height = "200px")
+
+# Note that kable extra will understand html
+
+# MIGHT BE NICE TO MESS WITH THIS TABLE... IF NOT, I JUST WON'T INCLUDE BUILDING IDS FOR MY FINAL PROJECT, THEY CAN SEE IT IN THE DATAFRAME IF THEY ARE REALLY THAT INTERESTED.....
+# df$buildings_ids %>% str_trunc(30, ellipsis = "...") #this can be used to shorten it
+# 
+# df %>%
+#   kable() %>%
+#   kable_classic(lightable_options = "hover") %>%
+#   scroll_box(height = "200px")
+# 
+# df %>%
+#   kableExtra::kable(),
+# kableExtra::kable_classic(), 
+# kableExtra::scroll_box(), 
+# kableExtra::cell_spec()
 ```
 
 ## Define damage categories:
 
 Catastrophe scores are separated by the summary of the dataset, excluding the catastrophe scores of 0.
-
 ```{r, echo = TRUE}
 mostdamage <- df %>% filter(catastrophescore >= 50)
 nodamage <- df %>% filter(catastrophescore == 0)
@@ -84,7 +150,6 @@ minimaldamage <- df %>% filter(catastrophescore == 1)
 ```
 
 Function for adding labels to the maps:
-
 ```{r, echo = TRUE}
 create_popup <- function(data) {
   paste("<b>Location</b><br>",
@@ -96,6 +161,20 @@ create_popup <- function(data) {
         "&nbsp;&nbsp;&nbsp;Shape: ", str_to_title(data$roofshape), "<br>",
         "<b>Roof Material</b><br>",
         "&nbsp;&nbsp;&nbsp;Material: ", str_to_title(data$roofmateri), "<br>")
+}
+
+r_med_sq_err <- function(model, absolute = FALSE){ # adding in the option for an absolute error
+  if(sum(class(model) %in% c("glm","lm")) > 0){
+    if(absolute == TRUE){
+      median(abs(residuals(model)))
+    }
+    sqrt(median(residuals(model)^2))
+  } else {
+    if(class(model) == "list"){
+      stop("Did you provide a list of models? Use map() instead.")
+    }
+    stop("'model' must be either a glm or lm object.")
+  }
 }
 ```
 
@@ -202,56 +281,157 @@ destroyed
 
 ---
 
+## Graphs:
+
+```{r}
+# This shows another representation of the data points (map w/o leaflet)
+# I would want to change the colors (they don't match well)
+# messing %>% 
+#   ggplot(aes(x=long, y=lat, color = damage_level)) +
+#   geom_point()
+# # based on long and lat, respectively. i would want to remove the NA
+# df %>% 
+#   ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+#   geom_point() + facet_wrap(~roofmateri)
+# 
+# df %>% 
+#   ggplot(aes(x=lat, y=catastrophescore, color = damage_level)) +
+#   geom_point() + facet_wrap(~roofmateri)
+# 
+# df %>% 
+#   ggplot(aes(x=rooftree, y=catastrophescore, color = damage_level)) +
+#   geom_point()
+# 
+# df %>% 
+#   filter(na.rm(df$poolarea)) %>% 
+#   ggplot(aes(x=poolarea, y=catastrophescore)) +
+#   geom_point()
+# 
+# df %>% 
+#   ggplot(aes(x=catastrophescore, y=roofcondit_missingmaterialpercen, color = damage_level)) +
+#   geom_point()
+# 
+# messing %>% 
+#   ggplot(aes(x=catastrophescore, y=roofcondit_structuraldamagepercen, color = damage_level)) +
+#   geom_point()
+```
+
+---
+
 ## Models:
 
+Since most of the buildings in this dataset were not damaged by a tornado, the summary of the catastrophe scores of each building is skewed. This can be seen below:
+
 ```{r}
-# mod1 <- df %>% glm(formula = catastrophescore ~ long + lat + rooftree + roofshape, family = "gaussian")
-# mod2 <- df %>% glm(formula = catastrophescore ~ long + lat + roofshape + rooftree + roofmateri, family = "gaussian")
-# mod3 <- df %>% glm(formula = catastrophescore ~ long + lat + trampoline + deck + pool + enclosure + divingboar + waterslide + playground + sportcourt + primarystr + roofsolar + rooftree + roofmateri * roofshape, family = "gaussian")
-mod3 <- df %>% glm(formula = catastrophescore ~ long + lat + enclosure + roofmateri + roofsolar + rooftree + roofshape, family = "gaussian")
-mod4 <- df %>% glm(formula = catastrophescore ~ long + lat + roofshape + rooftree + roofmateri + trampoline * deck * pool * enclosure * divingboar * waterslide * playground * sportcourt * primarystr * roofsolar, family = "gaussian")
-mod5 <- df %>% glm(formula = catastrophescore ~ long + lat + trampoline * deck * pool * enclosure * divingboar * waterslide * playground * sportcourt * primarystr * roofsolar + roofmateri + roofshape + rooftree, family = "gaussian")
+summary(df$catastrophescore)
 
-# compare_performance(mod1, mod2, mod3, mod4, mod5) %>% plot()
-# compare_performance(mod1, mod2, mod3, mod4, mod5)
-compare_performance(mod3, mod4, mod5) %>% plot()
-compare_performance(mod3, mod4, mod5)
+mod1 <- glm(formula = catastrophescore ~ long + lat + rooftree + roofshape, data = df, family = "gaussian")
+mod2 <- glm(formula = catastrophescore ~ long + enclosure + rooftree + roofmateri, data = df, family = "gaussian")
+mod3 <- glm(formula = catastrophescore ~ long + lat + roofshape + rooftree, data = df, family = "gaussian")
+mod4 <- glm(formula = catastrophescore ~ long + roofsolar + roofmateri, data = df, family = "gaussian")
+mod5 <- glm(formula = catastrophescore ~ long + enclosure + roofshape, data = df, family = "gaussian")
+mod6 <- glm(formula = catastrophescore ~ long + lat + roofshape + rooftree, data = df, family = "gaussian")
 
-# formula(mod1)
-# formula(mod2)
-formula(mod3)
-formula(mod4)
-formula(mod5)
+compare_performance(mod1, mod2, mod3, mod4, mod5, mod6) %>% plot()
+compare_performance(mod1, mod2, mod3, mod4, mod5, mod6)
+
+# rmse(mod1, df)
+# rmse(mod2, df)
+# rmse(mod3, df)
+rmse(mod4, df)
+rmse(mod5, df)
+# rmse(mod6, df)
+
+# # Median square error for all of the models:
+# r_med_sq_err(mod1)
+# r_med_sq_err(mod2)
+# r_med_sq_err(mod3) # appears to have the lowest med sqr error out ove everything
+# r_med_sq_err(mod4)
+# r_med_sq_err(mod5)
+# r_med_sq_err(mod6)
 ```
 
-## Check models 
+## Check models: Extra
 
-Model 3
+Due to this, I made models that excluded the catastrophe scores of 0 to just look into the structures that experienced damage. Below is the summary for the structures that exhibited damage:
 
 ```{r}
-check_model(mod3)
+extra <- df %>% filter(catastrophescore != 0)
+summary(extra$catastrophescore)
 ```
 
-Model 4
+Models
 
 ```{r}
-check_model(mod4)
+mods1 <- glm(formula = catastrophescore ~ long + roofshape + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
+mods2 <- glm(formula = catastrophescore ~ long + roofshape + enclosure + rooftree, data = extra, family = gaussian(link = "identity"))
+mods3 <- glm(formula = catastrophescore ~ long + roofshape + enclosure + roofmateri, data = extra, family = gaussian(link = "identity"))
+mods4 <- glm(formula = catastrophescore ~ long + roofmateri, data = extra, family = gaussian(link = "identity"))
+mods5 <- glm(formula = catastrophescore ~ long + roofmateri + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
+compare_performance(mods1, mods2, mods3, mods4, mods5) %>% plot()
+compare_performance(mods1, mods2, mods3, mods4, mods5)
+
+# check_model(mods1) # Kinda matches, some irregularities
+# # check_model(mods2) # fucked homogeneity
+# check_model(mods3) # not horrible, but linearity and homogeneity of variance don't fit too well
+# check_model(mods4) # Actually kinda works.. but very questionable
+# check_model(mods5) # might work
 ```
 
-Model 5
+Out of the models I made, *Model 5* appeared to work best. Though it should be noted that none of these models fit particularly well based on the variables used.
+
+**Model 5**
 
 ```{r}
-check_model(mod5)
+check_model(mods5, type = "pearson")
+summary(mods5)
+vif(mods5)
+```
+Root mean squared error for Model 4
+```{r}
+rmse(mods5, df)
 ```
 
 ---
 
 ## Predictions:
 
-I'm planning to add predictions and additional plots for the completed final project.
+Based on *Model 5*, I have made model predictions:
+
+```{r}
+prediction <- add_predictions(extra, mods5, type = "response") %>% select(pred)
+# extra %>% add_column(prediciton)
+
+pred <- add_predictions(extra, mods5, type = "response") %>% select(pred)
+extra <- extra %>% add_column(pred)
+
+comparison <- extra %>% select(catastrophescore, pred)
+```
+
+I then plotted the predicted catastrophe scores alongside the actual catastrophe scores for reference.
+
+```{r}
+ggplot(extra, aes(x = long, y = lat, color = as.numeric(unlist(pred)))) +
+  geom_point() +
+  geom_point(data = extra, aes(x = long, y = lat)) +
+  labs(x = "Longitude", 
+       y = "Latitude", 
+       title = "Predicted Points",
+       color = "Predicted Catastrophe Score") +
+  scale_color_gradient(low = "blue", high = "red", limits = c(0, 100))
+
+ggplot(extra, aes(x = long, y = lat, color = as.numeric(catastrophescore))) +
+  geom_point() +
+  geom_point(data = extra, aes(x = long, y = lat)) +
+  scale_color_gradient(low = "blue", high = "red", limits = c(0, 100)) +
+  labs(x = "Longitude", 
+       y = "Latitude", 
+       title = "Actual Points",
+       color = "Catastrophe Score")
+```
 
 ---
 
 ## Interpretations of predictions and models used:
 
-This will also be updated.
+The variables included in this dataset were shown to not be entirely helpful in predicting catastrophe scores accuarately, which is exemplified in the graph above.
