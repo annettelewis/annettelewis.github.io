@@ -14,9 +14,51 @@ pagetitle: final_project_report
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
+```{css}
+body {
+  background-color: #d4caa3;
+}
+#information-on-data {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#clean-data {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#damage-maps {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#models {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#predictions {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#interpretations {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+```
+
 ## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/)
 
-## **Information on data:**
+## **Information on data**
 The following data is on New Orleans tornado building damage during December 2022. This data was obtained from Verisk Analytics and it was derived computer vision and machine learning using post-catastrophe aerial imagry data. There are approximately 42,000 buildings in this dataset. 
 
 ---
@@ -38,6 +80,7 @@ library(stringr)
 library(htmltools)
 library(devtools)
 library(car)
+library(RColorBrewer)
 # library(htmlwidgets)
 # library(webshot2)
 theme_set(theme_minimal())
@@ -70,16 +113,22 @@ r_med_sq_err <- function(model, absolute = FALSE){ # adding in the option for an
 }
 ```
 
-```{r, out.width = 300}
+### FEMA scores
+
+Here is some general information on what each type of score means in the context of tornado roof damage:
+
+```{r, out.width = 300, fig.align='center'}
 knitr::include_graphics("./maps/fema.jpg") # 884×1334
 # Do I want to include this??? I might just want to explain some parts of it because I don't reference FEMA scores anywhere else
 ```
 
-### Before and after:
+---
 
-Here are some interactive before and after aerial images that were taken
+### Before and after
 
-```{r}
+Here are some interactive before and after aerial images that were taken:
+
+```{r, fig.align='center'}
 HTML('
 <link href="./twentytwenty.css" rel="stylesheet" type="text/css" />
 <p> This is an example of a building that has a catastrophe score of 100 (FEMA 6 / Destroyed) </p>
@@ -120,7 +169,7 @@ cat('<script src="./jquery.twentytwenty.js"></script>')
   });
 ```
 
-## **Clean data:**
+## **Clean data**
 
 I converted roof_solar into a T/F statement, by converting "SOLAR PANEL" to TRUE and "NO SOLAR PANEL" to FALSE. In addition to this, I converted the roof shapes that the computer wasn't very sure about (up to a 20% chance of being incorrect) into NA. There were some cells in damage_level where they were filled with an empty character, so I converted that into NA as well. I then separated longitude and latitude so that it could be easily read into leaflet. 
 
@@ -143,6 +192,8 @@ df$roofmateri <- factor(df$roofmateri, levels = c("gravel", levels_roofmateri))
 df$roofmateri <- factor(df$roofmateri, levels = levels_roofmateri)
 ```
 ---
+
+Catastrophe score is an aggregate of missing material, structural damage, and a few other attributes.
 
 ```{r}
 # df %>%
@@ -168,9 +219,39 @@ df$roofmateri <- factor(df$roofmateri, levels = levels_roofmateri)
 # kableExtra::cell_spec()
 ```
 
-### Define damage categories:
+---
 
-**Catastrophe scores are separated by the summary of the dataset, excluding the catastrophe scores of 0.**
+### Building characteristics
+
+Typically, insurance agencies consider gable roof shapes as more prone to damage than hip roof shapes. This graph illustrates the proportion of roofs of a certain shape:
+
+```{r, fig.align='center'}
+colors <- c("gray", "blue", "#990099", "#990066", "#CC0099", "#CC0066", "#CC0033", "red")
+
+color_map <- setNames(colors, c(NA, "FEMA 0 / Minor", "FEMA 1 / Moderate", "FEMA 2 / Moderate", "FEMA 3 / Moderate",  "FEMA 4 / Major", "FEMA 5 / Major", "FEMA 6 / Destroyed"))
+
+df %>%
+  ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofshape) +
+  labs(title = "Roof shapes", x = "Longitude", y = "Catastrophe Score", color = "Damage Level") +
+  scale_color_manual(values = color_map)
+
+# It might even be good to use a bar chart to highlight this
+```
+
+In addition to this, shingle roofs are more easily damaged than metal or tile roofs, which is important to keep in mind because shingle roofs are used extremely often in the states. The graph below illustrates the proportion of roofs made with a certain material (shingle roofs clearly are most prominent):
+
+```{r, fig.align='center'}
+df %>%
+  ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofmateri) +
+  labs(title = "Roof materials", x = "Longitude", y = "Catastrophe Score", color = "Damage Level") +
+  scale_color_manual(values = color_map)
+```
+
+## **Damage maps**
+
+Catastrophe scores are separated based on the summary of the data set, excluding the catastrophe scores of 0 (which is shown in the *Models* section):
 ```{r, echo = TRUE}
 mostdamage <- df %>% filter(catastrophescore >= 50)
 nodamage <- df %>% filter(catastrophescore == 0)
@@ -180,15 +261,13 @@ leastdamage <- df %>% filter(catastrophescore < 15 & catastrophescore >= 2)
 minimaldamage <- df %>% filter(catastrophescore == 1)
 ```
 
-## **Damage maps:**
+**NOTE:** <span style="color:red">Red</span> indicates the buildings that were the most damaged (catastrophe score >= 50), <span style="color:orange">orange</span> indicates (25 < catastrophe score < 50), <span style="color:blue">blue</span> indicates (catastrophe score <= 25, excluding scores of 0). Only 3852 buildings experienced a nonzero catastrophe score, so the majority of the buildings (37,967) exhibited a catastrophe score of 0, which is shown in <span style="color:gray">gray</span>.
 
-**NOTE:** Red indicates the buildings that were the most damaged (catastrophe score >= 50), orange indicates (25 < catastrophe score < 50), blue indicates (catastrophe score <= 25, excluding scores of 0). Only 3852 buildings experienced a nonzero catastrophe score, so the majority of the buildings (37,967) exhibited a catastrophe score of 0.
+### All points
 
-### All points:
+This shows all of the catastrophe scores, the vast majority of roofs have no damage, which is denoted in <span style="color:gray">gray</span>.
 
-This shows all of the catastrophe scores, the vast majority of roofs have no damage.
-
-```{r, out.height= 450, out.width = 675}
+```{r, out.height= 450, out.width = 675, fig.align='center'}
 # alldamage <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
 #   addTiles() %>%
 #   addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2) %>%
@@ -207,26 +286,27 @@ knitr::include_graphics("./maps/alldamage.png")
 
 ---
 
-### Least damage:
+### No damage
+Map of the buildings that experienced no damage. These are all of the roofs that have a catastrophe score of 0:
 
-Map of the buildings that experienced the least damage:
-
-```{r, out.height= 450, out.width = 675}
-# least <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+```{r, out.height= 450, out.width = 675, fig.align='center'}
+# none <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
 #   addTiles() %>%
-#   addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2,
-#                    popup = create_popup(leastdamage))
-# leastdamage_map <- saveWidget(least, file = "leastdamage_map.html", selfcontained = TRUE)
-# webshot2::webshot("leastdamage_map.html", "leastdamage_map.png", cliprect = "viewport", zoom = 5)
+#   addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5,
+#                    popup = create_popup(nodamage))
+# none_map <- saveWidget(none, file = "none_map.html", selfcontained = TRUE)
+# webshot2::webshot("none_map.html", "none_map.png", cliprect = "viewport", zoom = 5)
 
-knitr::include_graphics("./maps/leastdamage.png")
+knitr::include_graphics("./maps/none.png")
 ```
 
-### Mid damage:
+### Damage
 
-Map of the buildings that experienced mid damage:
+Map of the buildings that experienced any form of damage:
 
-```{r, out.height= 450, out.width = 675}
+**NOTE:** <span style="color:red">Red</span> indicates the buildings that were the most damaged and indicates a catastrophe score above or equal to 50, <span style="color:orange">orange</span> indicates a catastrophe score more than 25 and less than 50, <span style="color:blue">blue</span> indicates a catastrophe score at or below 25.
+
+```{r, out.height= 450, out.width = 675, fig.align='center'}
 # damage <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
 #   addTiles() %>%
 #   addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2, popup = create_popup(mostdamage)) %>%
@@ -238,9 +318,45 @@ Map of the buildings that experienced mid damage:
 knitr::include_graphics("./maps/damage.png")
 ```
 
-### Most damage:
+---
 
-Map of the buildings that experienced the most damage (interactive!):
+**Let's break down the damage:**
+
+### Least damage
+
+Map of the buildings that experienced the least damage. The catastrophe scores seen here are more than or equal to 2 and less than 15:
+
+```{r, out.height= 450, out.width = 675, fig.align='center'}
+# least <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+#   addTiles() %>%
+#   addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2,
+#                    popup = create_popup(leastdamage))
+# leastdamage_map <- saveWidget(least, file = "leastdamage_map.html", selfcontained = TRUE)
+# webshot2::webshot("leastdamage_map.html", "leastdamage_map.png", cliprect = "viewport", zoom = 5)
+
+knitr::include_graphics("./maps/leastdamage.png")
+```
+
+### Mid damage
+
+Map of the buildings that experienced mid catastrophe scores. These catastrophe scores vary from a score of 15 or above to a score less than 50:
+
+```{r, out.height= 450, out.width = 675, fig.align='center'}
+# damage <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+#   addTiles() %>%
+#   addCircleMarkers(lng=mostdamage$long, lat=mostdamage$lat, color = "red", radius = 2, popup = create_popup(mostdamage)) %>%
+#   addCircleMarkers(lng=middamage$long, lat=middamage$lat, color = "orange", radius = 2, popup = create_popup(middamage)) %>%
+#   addCircleMarkers(lng=leastdamage$long, lat=leastdamage$lat, color = "blue", radius = 2, popup = create_popup(leastdamage))
+# damage_map <- saveWidget(damage, file = "damage_map.html", selfcontained = TRUE)
+# webshot2::webshot("damage_map.html", "damage_map.png", cliprect = "viewport", zoom = 5)
+
+knitr::include_graphics("./maps/middamage.png")
+```
+
+### Most damage
+
+Map of the buildings that experienced the most damage. These buildings have catastrophe scores at or above 50: 
+**(Click the points!)**
 
 ```{r}
 high <- leaflet() %>%
@@ -250,23 +366,10 @@ high <- leaflet() %>%
 high
 ```
 
-### No damage:
-Map of the buildings that experienced no damage:
+### Destroyed
 
-```{r, out.height= 450, out.width = 675}
-# none <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
-#   addTiles() %>%
-#   addCircleMarkers(lng=nodamage$long, lat=nodamage$lat, color = "gray", radius = .5,
-#                    popup = create_popup(nodamage))
-# none_map <- saveWidget(none, file = "none_map.html", selfcontained = TRUE)
-# webshot2::webshot("none_map.html", "none_map.png", cliprect = "viewport", zoom = 5)
-
-knitr::include_graphics("./maps/none.png")
-```
-
-### Destroyed:
-
-Map of the buildings that were completely destroyed:
+Map of the buildings that were completely destroyed. These have catastrophe scores of 100: 
+**(Click on the points here too!)**
 
 ```{r}
 destroyed <- leaflet() %>%
@@ -276,9 +379,7 @@ destroyed <- leaflet() %>%
 destroyed
 ```
 
----
-
-## **Models:**
+## **Models**
 
 Since most of the buildings in this dataset were not damaged by a tornado, the summary of the catastrophe scores of each building is skewed. This can be seen below:
 
@@ -313,7 +414,9 @@ summary(df$catastrophescore)
 
 ### Check models: Extra
 
-**Due to this, I made models that excluded the catastrophe scores of 0 to just look into the structures that experienced damage. Below is the summary for the structures that exhibited damage:**
+Due to this, I made models that excluded the catastrophe scores of 0 to just look into the structures that experienced damage. Below is the summary for the structures that exhibited damage:
+
+In addition to this, the models I have made on the data could not have been able to entirely describe the data because the data was derived using computer vision machine learning from aerial imagery data. The computer vision models themselves have inherent error rates sometimes as height as 30% or 40%. Tornadoes are inherently chaotic such that they have a tendency to bounce around, which leads to seemingly random interactions with other substrates.
 
 ```{r}
 extra <- df %>% filter(catastrophescore != 0)
@@ -322,7 +425,7 @@ summary(extra$catastrophescore)
 
 **Models**
 
-```{r}
+```{r, fig.align='center'}
 mods1 <- glm(formula = catastrophescore ~ long + roofshape + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
 mods2 <- glm(formula = catastrophescore ~ long + roofshape + enclosure + rooftree, data = extra, family = gaussian(link = "identity"))
 mods3 <- glm(formula = catastrophescore ~ long + roofshape + enclosure + roofmateri, data = extra, family = gaussian(link = "identity"))
@@ -342,23 +445,28 @@ compare_performance(mods1, mods2, mods3, mods4, mods5)
 
 **Model 3**
 
-```{r}
+```{r check_model, fig.align='center', echo=TRUE, out.width='90%', fig.cap='Correlation plot between variables using Pearson correlation coefficient', warning=FALSE}
+
 check_model(mods3, type = "pearson")
+  theme(text = element_text(size = 10))
 summary(mods5)
 vif(mods5)
 ```
 Root mean squared error for Model 3
 ```{r}
-rmse(mods3, df)
+rmse(mods3, extra)
+```
+Root median squared error for Model 3
+```{r}
+r_med_sq_err(mods3)
 ```
 
----
 
-## **Predictions:**
+## **Predictions**
 
 **Based on *Model 3*, I have made model predictions:**
 
-```{r}
+```{r, fig.align='center'}
 prediction <- add_predictions(extra, mods3, type = "response") %>% select(pred)
 # extra %>% add_column(prediciton)
 
@@ -400,45 +508,8 @@ p2 <- ggplot(extra, aes(x = long, y = lat, color = as.numeric(catastrophescore))
 p1/p2
 ```
 
----
-
-## **Interpretations:**
+## **Interpretations**
 
 The variables included in this dataset were shown to not be entirely helpful in predicting catastrophe scores accurately, which is exemplified in the graph above. More information would need to be considered, specifically, taking a look into tornadoes.
 
----
 
-## Graphs:
-
-```{r}
-# This shows another representation of the data points (map w/o leaflet)
-# I would want to change the colors (they don't match well)
-# messing %>% 
-#   ggplot(aes(x=long, y=lat, color = damage_level)) +
-#   geom_point()
-# # based on long and lat, respectively. i would want to remove the NA
-# df %>% 
-#   ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
-#   geom_point() + facet_wrap(~roofmateri)
-# 
-# df %>% 
-#   ggplot(aes(x=lat, y=catastrophescore, color = damage_level)) +
-#   geom_point() + facet_wrap(~roofmateri)
-# 
-# df %>% 
-#   ggplot(aes(x=rooftree, y=catastrophescore, color = damage_level)) +
-#   geom_point()
-# 
-# df %>% 
-#   filter(na.rm(df$poolarea)) %>% 
-#   ggplot(aes(x=poolarea, y=catastrophescore)) +
-#   geom_point()
-# 
-# df %>% 
-#   ggplot(aes(x=catastrophescore, y=roofcondit_missingmaterialpercen, color = damage_level)) +
-#   geom_point()
-# 
-# messing %>% 
-#   ggplot(aes(x=catastrophescore, y=roofcondit_structuraldamagepercen, color = damage_level)) +
-#   geom_point()
-```
