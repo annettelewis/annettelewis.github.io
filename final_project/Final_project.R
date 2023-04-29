@@ -18,7 +18,6 @@ library(webshot)
 # source("../myfunctions.R") # allows to pull functions from another script (I could use this, but I would want to change my markdown file to do this...)
 theme_set(theme_minimal())
 # sf package and even rgdal might be helpful for this, renderings and tiff files can be done with this
-
 # data from tornadoes: New Orleans December 2022
 # clean data
 df <- read.csv("clean_data.csv") %>% 
@@ -38,6 +37,26 @@ df$roofshape <- factor(df$roofshape, levels = c("gable", "hip", "flat"))
 levels_roofmateri <- c("metal", "shingle", "membrane", "shake", "tile")
 df$roofmateri <- factor(df$roofmateri, levels = c("gravel", levels_roofmateri))
 df$roofmateri <- factor(df$roofmateri, levels = levels_roofmateri)
+
+
+colors <- c("gray", "blue", "#990099", "#990066", "#CC0099", "#CC0066", "#CC0033", "red")
+
+color_map <- setNames(colors, c(NA, "FEMA 0 / Minor", "FEMA 1 / Moderate", "FEMA 2 / Moderate", "FEMA 3 / Moderate",  "FEMA 4 / Major", "FEMA 5 / Major", "FEMA 6 / Destroyed"))
+
+df %>%
+  ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofshape) +
+  labs(title = "Roof Shapes", x = "Longitude", y = "Catastrophe Score", color = "Damage Level") +
+  scale_color_manual(values = color_map)
+ggsave("./maps/roof_shapes.png", width = 6.75, height = 4.5, dpi = 300)
+
+df %>%
+  ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofmateri) +
+  labs(title = "Roof Materials", x = "Longitude", y = "Catastrophe Score", color = "Damage Level") +
+  scale_color_manual(values = color_map)
+ggsave("./maps/roof_materials.png", width = 6.75, height = 4.5, dpi = 300)
+
 # df %>%
 #   kable() %>%
 #   kable_classic(lightable_options = "hover") %>%
@@ -227,6 +246,44 @@ df %>%
   geom_point() + facet_wrap(~roofmateri)
 
 df %>% 
+  ggplot(aes(x=long, y= damage_level, color = catastrophescore) +
+           geom_point() + facet_wrap(~roofmateri) +
+           labs(title = "Roof materials", x = "Longitude", y = "Catastrophe Score") +
+           scale_color_gradient(low = "blue", high = "red")
+         
+
+         
+#assume appropriate colors
+         library(RColorBrewer)
+         
+         # Set colors for each category
+colors <- c("gray", "blue", "#990099", "#990066", "#CC0099", "#CC0066", "#CC0033", "red")
+         
+         # Create a named vector to map colors to categories
+color_map <- setNames(colors, c(NA, "FEMA 0 / Minor", "FEMA 1 / Moderate", "FEMA 2 / Moderate", "FEMA 3 / Moderate",  "FEMA 4 / Major", "FEMA 5 / Major", "FEMA 6 / Destroyed"))
+         
+         # Use scale_color_manual to specify the color scale
+         df %>%
+           ggplot(aes(x=long, y=catastrophescore, color = damage_level)) +
+           geom_point() + facet_wrap(~roofmateri) +
+           labs(title = "Roof materials", x = "Longitude", y = "Catastrophe Score", color = "Damage Level") +
+           scale_color_manual(values = color_map)
+         
+         
+        
+         df %>%
+           mutate(damage_level_numeric = as.numeric(damage_level)) %>%
+           ggplot(aes(x=long, y=catastrophescore, color = damage_level_numeric)) +
+           geom_point() + facet_wrap(~roofmateri) +
+           labs(title = "Roof materials", x = "Longitude", y = "Catastrophe Score") +
+           scale_color_gradient(low = "blue", high = "red", na.value = "gray")
+         
+
+df %>% 
+  ggplot(aes(x=lat, y=catastrophescore, color = damage_level)) +
+  geom_point() + facet_wrap(~roofshape)
+
+df %>% 
   ggplot(aes(x=rooftree, y=catastrophescore, color = damage_level)) +
   geom_point()
 
@@ -385,6 +442,97 @@ list(mod1, mod2, mod3, mod4) %>%
   map_dbl(r_med_sq_err) # dbl gives the four models, like dbl, gives the rmse for everything
 source("../myfunctions.R") # allows to pull functions from another script
 
+
+mods1 <- glm(formula = catastrophescore ~ roofshape + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
+mods2 <- glm(formula = catastrophescore ~ roofshape + enclosure + rooftree, data = extra, family = gaussian(link = "identity"))
+mods3 <- glm(formula = catastrophescore ~ roofshape + enclosure + roofmateri, data = extra, family = gaussian(link = "identity"))
+mods4 <- glm(formula = catastrophescore ~ roofmateri, data = extra, family = gaussian(link = "identity"))
+mods5 <- glm(formula = catastrophescore ~ roofmateri + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
+compare_performance(mods1, mods2, mods3, mods4, mods5) %>% plot()
+compare_performance(mods1, mods2, mods3, mods4, mods5)
+
+
+
+
+
 # Coinflip
 rbinom(prob = 0.5, size =100, n =10) %>% # 100 trials, 10 times each
   hist() # and this shows it
+
+
+#---------------------------------------------------
+# Even with the removal of catastrophe scores equal to 0, there is still a 
+ # significant skew with most catastrophe scores being between 2 and 25.
+# This is shown in the representative histogram:
+extra %>% 
+  ggplot(aes(x= catastrophescore)) + 
+  geom_histogram()
+# In an effort to combat this issue, I decided to use the inverse gaussian family
+mods1 <- glm(formula = catastrophescore ~ long + roofshape + rooftree + enclosure, 
+             data = extra, family = inverse.gaussian(link = "identity"))
+mods2 <- glm(formula = catastrophescore ~ long + roofmateri + enclosure + rooftree, 
+             data = extra, family = inverse.gaussian(link = "identity"))
+mods3 <- glm(formula = catastrophescore ~ long + roofshape + roofmateri + enclosure + roofmateri, 
+             data = extra, family = inverse.gaussian(link = "identity"))
+mods4 <- glm(formula = catastrophescore ~ long + enclosure + rooftree + roofshape + roofmateri, 
+             data = extra, family = inverse.gaussian(link = "identity"))
+mods5 <- glm(formula = catastrophescore ~ long + roofshape + roofmateri + rooftree, 
+             data = extra, family = inverse.gaussian(link = "identity"))
+#-----
+mods1 <- glm(formula = catastrophescore ~ long + roofshape + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
+mods2 <- glm(formula = catastrophescore ~ long + roofshape + enclosure + rooftree, data = extra, family = gaussian(link = "identity"))
+mods3 <- glm(formula = catastrophescore ~ long + roofshape + enclosure + roofmateri, data = extra, family = gaussian(link = "identity"))
+mods4 <- glm(formula = catastrophescore ~ long + roofmateri, data = extra, family = gaussian(link = "identity"))
+mods5 <- glm(formula = catastrophescore ~ long + roofmateri + rooftree + enclosure, data = extra, family = gaussian(link = "identity"))
+#-------
+
+# In comparing these updated models, it appears that 4 works best
+compare_performance(mods1, mods2, mods3, mods4, mods5) %>% plot()
+compare_performance(mods1, mods2, mods3, mods4, mods5)
+
+check_model(mods1) # homogeneity falls off (not flat and horiz.) and normality of residuals doesn't match line
+check_model(mods2) # basically same deal
+check_model(mods3)
+check_model(mods4) # Follows decently well, but has an inherent issue in the normality fo residuals (not following line)
+check_model(mods5)
+
+check_model(mods4)
+
+```{r}
+summary(mods4)
+performance(mods4)
+summary(pred)
+
+
+#Root median squared error for Model 3
+```{r}
+r_med_sq_err(mods4)
+
+```{r, fig.align='center'}
+prediction <- add_predictions(extra, mods4, type = "response") %>% select(pred)
+# extra %>% add_column(prediciton)
+
+pred <- add_predictions(extra, mods4, type = "response") %>% select(pred)
+extra <- extra %>% add_column(pred)
+
+comparison <- extra %>% select(catastrophescore, pred)
+
+
+p1 <- ggplot(extra, aes(x = long, y = lat, color = as.numeric(unlist(pred)))) +
+  geom_point() +
+  geom_point(data = extra, aes(x = long, y = lat)) +
+  labs(x = "Longitude", 
+       y = "Latitude", 
+       title = "Predicted Points",
+       color = "Predicted Catastrophe Score") +
+  scale_color_gradient(low = "blue", high = "red", limits = c(0, 100))
+
+p2 <- ggplot(extra, aes(x = long, y = lat, color = as.numeric(catastrophescore))) +
+  geom_point() +
+  geom_point(data = extra, aes(x = long, y = lat)) +
+  scale_color_gradient(low = "blue", high = "red", limits = c(0, 100)) +
+  labs(x = "Longitude", 
+       y = "Latitude", 
+       title = "Actual Points",
+       color = "Catastrophe Score")
+p1/p2
