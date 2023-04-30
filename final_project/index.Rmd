@@ -326,7 +326,7 @@ knitr::include_graphics("./maps/none.png")
 
 Map of the buildings that experienced any form of damage:
 
-**NOTE:** **<span style="color:red">Red</span>** indicates the buildings that were the most damaged (catastrophe score ≥ 50), **<span style="color:orange">orange</span>** indicates (15 < catastrophe score < 50), **<span style="color:blue">blue</span>** indicates (2 ≤ catastrophe score < 15).
+**NOTE:** **<span style="color:red">Red</span>** indicates the buildings that were the most damaged (catastrophe score ≥ 50), **<span style="color:orange">orange</span>** indicates (15 ≤ catastrophe score < 50), **<span style="color:blue">blue</span>** indicates (2 ≤ catastrophe score < 15).
 
 ```{r, out.height= 450, out.width = 675}
 knitr::include_graphics("./maps/damage.png")
@@ -356,7 +356,9 @@ knitr::include_graphics("./maps/middamage.png")
 
 ### Most damage **(interactive)**
 
-Map of the buildings that experienced the **<span style="color:red">most damage</span>**. These are the buildings that had a catastrophe score at or above 50 **(Click the points!)**:
+Map of the buildings that experienced the **<span style="color:red">most damage</span>**. These are the buildings that had a catastrophe score at or above 50:
+
+**(Click the points!)**
 
 **Note:** The general path of the tornado can be seen here.
 
