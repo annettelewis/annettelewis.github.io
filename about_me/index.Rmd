@@ -50,7 +50,6 @@ The mean city miles per gallon is **`r round(mean(mpg$cty), 2)`** in this datase
 
 ---
 
-
 **Music Links**
 
 [Hand Exercises](https://youtu.be/TSrfB7JIzxY)
