@@ -6,6 +6,22 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
+## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Final Project](https://annettelewis.github.io/final_project/)
 
 ### Nothing here yet!
+
+**Courses/Certifications:**
+
+[Course: Artificial Intelligence in Bioinformatics](https://www.futurelearn.com/courses/artificial-intelligence-in-bioinformatics/3/todo/167078)
+
+[Course: Clinical Bioinformatics](https://www.futurelearn.com/courses/bioinformatics/10/todo/73533)
+
+[Course: Introductory Bioinformatics](https://www.ebi.ac.uk/training/online/courses/introductory-bioinformatics-pathway/#vf-tabs__section--overview)
+
+[Codeacademy](https://www.codecademy.com/catalog)
+
+```{bash, message = FALSE, include = FALSE}
+git add index.Rmd
+git commit -m "automatic"
+git push
+```
