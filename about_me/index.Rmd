@@ -45,12 +45,14 @@ round(mean(mpg$cty), 2)
 <br><br><br>
 
 ---
+
 The mean city miles per gallon is **`r round(mean(mpg$cty), 2)`** in this dataset
 
 ---
 
 
 **Music Links**
+
 [Hand Exercises](https://youtu.be/TSrfB7JIzxY)
 
 [Best Part Karaoke](https://www.youtube.com/watch?v=cpzT2M2x_Kw) 
