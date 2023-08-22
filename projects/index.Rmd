@@ -8,9 +8,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/)
 
-### BIOL-3100 final project!
+### Projects
 
-- [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)
+### BIOL-3100 [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)!
 
 **Courses/Certifications:**
 
