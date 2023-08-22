@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### BIOL-3100 [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)!
 
+---
+
 **Courses/Certifications:**
 
 [Course: Artificial Intelligence in Bioinformatics](https://www.futurelearn.com/courses/artificial-intelligence-in-bioinformatics/3/todo/167078)
