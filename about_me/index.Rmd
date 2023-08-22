@@ -7,7 +7,21 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 ## [Home](https://annettelewis.github.io/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
 
-### Hi, my name is Annette.
+### Biology Bachelor's Dec 2023 | Self-Motivated Learner | Aspiring Researcher
+
+## 🌱 Biology Bachelor's Dec 2023 | Utah Valley University (UVU)
+## 📚 Committed to Excellence | Graduated High School Early | Earned University Studies Associate’s
+## 💻 Proficient in RStudio | Data Analysis Enthusiast
+## 🔬 Passionate about Advancing Biological Research | Seeking Opportunities in Biotechnology
+## 🌿 Curious Latina Scientist with a Love for Nature and Discovery
+
+Hi, My name is Annette! I am an upcoming biology graduate from Utah Valley University (UVU) with an expected completion date in December 2023. I am driven by a deep passion for scientific exploration and discovery. I take pride in my commitment to education, having achieved an early graduation from high school and successfully completed a two-year degree in University Studies at UVU in 2021.
+
+My academic journey has fostered a strong foundation in data analysis, and I am proficient in utilizing RStudio for conducting research and analyzing complex biological data. I am eager to contribute my skills to biology projects that hold the potential to make a positive impact on society.
+
+My aspirations lie in advancing biological research, unraveling the mysteries of the natural world, and applying scientific knowledge to improve human health and well-being. I believe that diversity drives innovation, and as a Latina scientist, I am dedicated to promoting inclusivity and collaboration within the scientific community.
+
+Let's connect and explore new opportunities together! I am excited to contribute my expertise and continue my growth as a biologist and researcher.
 
 **These are not updated yet!**
 
