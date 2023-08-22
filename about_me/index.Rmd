@@ -8,11 +8,9 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ## [Home](https://annettelewis.github.io/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
 
 🌱 Biology Bachelor's Dec 2023 | Utah Valley University (UVU)
-
-📚 Committed to Excellence | Graduated High School Early | Earned University Studies Associate’s💻 Proficient in RStudio | Data Analysis Enthusiast
-
+📚 Committed to Excellence | Graduated High School Early | Earned University Studies Associate’s
+💻 Proficient in RStudio | Data Analysis Enthusiast
 🔬 Passionate about Advancing Biological Research | Seeking Opportunities in Biotechnology
-
 🌿 Curious Latina Scientist with a Love for Nature and Discovery
 
 ```{r, out.height= 300, out.width = 200}
