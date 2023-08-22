@@ -27,11 +27,9 @@ knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 
 My aspirations lie in advancing biological research, unraveling the mysteries of the natural world, and applying scientific knowledge to improve human health and well-being. I believe that diversity drives innovation, and as a Latina scientist, I am dedicated to promoting inclusivity and collaboration within the scientific community.
 
-Let's connect and explore new opportunities together! I am excited to contribute my expertise and continue my growth as a biologist and researcher.
+#### Let's connect and explore new opportunities together!
 
-Here is my [LinkedIn](https://www.linkedin.com/in/annette-lewis-68314b216/)
-
-Here is my [resume](http://annettelewis.github.io/media/Resume.pdf)
+Here is my [LinkedIn](https://www.linkedin.com/in/annette-lewis-68314b216/) and my [resume](http://annettelewis.github.io/media/Resume_Annette_Lewis.pdf)
 
 I love to play the violin in my free time, it's fun!
 
