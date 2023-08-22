@@ -7,12 +7,6 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 ## [Home](https://annettelewis.github.io/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
 
-### Biology Bachelor's Dec 2023 | Self-Motivated Learner | Aspiring Researcher
-
-```{r, out.height= 300, out.width = 200}
-knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
-``` 
-
 🌱 Biology Bachelor's Dec 2023 | Utah Valley University (UVU)
 
 📚 Committed to Excellence | Graduated High School Early | Earned University Studies Associate’s💻 Proficient in RStudio | Data Analysis Enthusiast
@@ -20,6 +14,10 @@ knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 🔬 Passionate about Advancing Biological Research | Seeking Opportunities in Biotechnology
 
 🌿 Curious Latina Scientist with a Love for Nature and Discovery
+
+```{r, out.height= 300, out.width = 200}
+knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
+``` 
 
 Hi, My name is Annette! I am an upcoming biology graduate from Utah Valley University (UVU) with an expected completion date in December 2023. I am driven by a deep passion for scientific exploration and discovery. I take pride in my commitment to education, having achieved an early graduation from high school and successfully completed a two-year degree in University Studies at UVU in 2021.
 
