@@ -7,7 +7,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/)
----
 
 ## Projects
 
