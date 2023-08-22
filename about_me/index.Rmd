@@ -7,7 +7,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 ## [Home](https://annettelewis.github.io/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
 
-# Biology Bachelor's Dec 2023 | Self-Motivated Learner | Aspiring Researcher
+### Biology Bachelor's Dec 2023 | Self-Motivated Learner | Aspiring Researcher
 
 ```{r, out.height= 300, out.width = 200}
 knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
