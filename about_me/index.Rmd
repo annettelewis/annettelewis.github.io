@@ -35,6 +35,8 @@ Here is my [LinkedIn](https://www.linkedin.com/in/annette-lewis-68314b216/) and 
 
 I love to play the violin in my free time, it's fun!
 
+---
+
 #### Example of coding!
 
 Here is an example where I play around with the mpg (miles per gallon) dataset. 
@@ -72,6 +74,7 @@ A more extensive project that I have done can be seen [here](https://annettelewi
 
 <br><br><br>
 
+---
 **Music Links**
 
 [Hand Exercises](https://youtu.be/TSrfB7JIzxY)
