@@ -8,24 +8,26 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ## [Home](https://annettelewis.github.io/) | [Projects](https://annettelewis.github.io/projects/) | [Final Project](https://annettelewis.github.io/final_project/)
 
 🌱 Biology Bachelor's Dec 2023 | Utah Valley University (UVU)
+
 📚 Committed to Excellence | Graduated High School Early | Earned University Studies Associate’s
+
 💻 Proficient in RStudio | Data Analysis Enthusiast
+
 🔬 Passionate about Advancing Biological Research | Seeking Opportunities in Biotechnology
+
 🌿 Curious Latina Scientist with a Love for Nature and Discovery
 
 ```{r, out.height= 300, out.width = 200}
 knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 ``` 
 
-Hi, My name is Annette! I am an upcoming biology graduate from Utah Valley University (UVU) with an expected completion date in December 2023. I am driven by a deep passion for scientific exploration and discovery. I take pride in my commitment to education, having achieved an early graduation from high school and successfully completed a two-year degree in University Studies at UVU in 2021.
+Hi, My name is *Annette*! I am an upcoming biology graduate from Utah Valley University (UVU) with an expected completion date in December 2023. I am driven by a deep passion for scientific exploration and discovery. I take pride in my commitment to education, having achieved an early graduation from high school and successfully completed a two-year degree in University Studies at UVU in 2021.
 
 My academic journey has fostered a strong foundation in data analysis, and I am proficient in utilizing RStudio for conducting research and analyzing complex biological data. I am eager to contribute my skills to biology projects that hold the potential to make a positive impact on society.
 
 My aspirations lie in advancing biological research, unraveling the mysteries of the natural world, and applying scientific knowledge to improve human health and well-being. I believe that diversity drives innovation, and as a Latina scientist, I am dedicated to promoting inclusivity and collaboration within the scientific community.
 
 Let's connect and explore new opportunities together! I am excited to contribute my expertise and continue my growth as a biologist and researcher.
-
-**These are not updated yet!**
 
 Here is my [LinkedIn](https://www.linkedin.com/in/annette-lewis-68314b216/)
 
@@ -34,9 +36,11 @@ Here is my [resume](http://annettelewis.github.io/media/Resume.pdf)
 I love to play the violin in my free time, it's fun!
 
 
-### I can do coding things!
+### Example of coding!
 
-Here's the mpg dataset:
+Here is an example where I play around with the mpg (miles per gallon) dataset. 
+
+This table can be scrolled through for additional information:
 ```{r message=FALSE, include=TRUE}
 library(tidyverse)
 library(kableExtra)
@@ -45,7 +49,10 @@ mpg %>%
   kable() %>% 
   kable_classic(lightable_options = 'hover') %>% 
   scroll_box(width = "500px", height = "200px")
+```
 
+This following plot demonstrates displacement with the city. These data points are interactive:
+```{r message=FALSE, include=TRUE}
 p <- mpg %>% 
   ggplot(aes(x= displ, y= cty)) +
   geom_point() +
@@ -53,15 +60,18 @@ p <- mpg %>%
 ggplotly(p)
 
 round(mean(mpg$cty), 2)
-
 ```
 <br><br><br>
 
 ---
 
-The mean city miles per gallon is **`r round(mean(mpg$cty), 2)`** in this dataset
+The mean city miles per gallon is **`r round(mean(mpg$cty), 2)`** in this dataset.
 
 ---
+
+More of my work can be seen in projects!
+
+<br><br><br>
 
 **Music Links**
 
