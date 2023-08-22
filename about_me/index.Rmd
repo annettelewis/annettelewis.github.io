@@ -68,7 +68,7 @@ The mean city miles per gallon is **`r round(mean(mpg$cty), 2)`** in this datase
 
 ---
 
-A more extensive project that I have done can be seen [here](https://annettelewis.github.io/projects/BIOL_3100_final_project).
+A more extensive project that I have done can be seen [here](https://annettelewis.github.io/projects/BIOL_3100_final_project/) where I looked at tornado building damage in New Orleans.
 
 <br><br><br>
 
