@@ -6,9 +6,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Final Project](https://annettelewis.github.io/final_project/)
+## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/)
 
-### Nothing here yet!
+### BIOL-3100 final project!
+
+- [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)
 
 **Courses/Certifications:**
 
