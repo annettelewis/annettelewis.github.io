@@ -27,6 +27,8 @@ body {
 }
 ```
 
+## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/)
+
 ## Molecular Biology Final Project
 
 ### BIOL 3550
@@ -86,7 +88,6 @@ data %>%
 
 ```{r}
 knitr::include_graphics("../../media/Screenshot 2023-08-23 at 6.38.58 PM.png") 
-# 2402×108
 ``` 
 
 **Figure 1**. Sequence 12 CDD analysis result demonstrating motif location (interval of 38-201). 
@@ -113,15 +114,14 @@ data %>%
 <br><br>
 
 Based on my assigned sequence, I conducted an open reading frame (ORF) finder analysis and could see four ORFs, as demonstrated in *Figure 2*. From this analysis, I identified ORF1 as the best ORF for sequence 12. The table below, *Table 4*, shows the protein translation of ORF1. 
+<br><br>
 
-```{r}
+```{r, out.width= 10000}
 knitr::include_graphics("../../media/ORFs.png") 
-# 1060×200
 ``` 
 
 **Figure 2**. The proposed ORFs suggested by the ORF Finder analysis.  
-<br><br>
-
+<br>
 ```{r}
 orf <- data.frame(
   Label = "ORF1",
@@ -140,32 +140,31 @@ orf %>%
 <br><br>
 
 In my Signal-P analysis, *Table 5*, I used the translated protein sequence from ORF1, and I identified that my protein has an extremely low likelihood, 0.0015, of having a signal peptide. The Signal-P analysis looks for amino acid residues responsible for amino acid excretion or a membrane's presence. In this analysis, I determined that the virus I was assigned does not have a membrane and thus has no signals for Signal-P to find, as seen in *Figure 3*. In my TMHMM analysis, shown in *Figure 4* and *Figure 5*, I got a negative result, meaning that my virus does not have any strongly predicted transmembrane domains. 
+<br><br>
 
-```{r}
+```{r, out.width= 300}
 knitr::include_graphics("../../media/SignalPtable.png") 
-# 2402×108
 ``` 
 
 **Table 5**. Signal-P analysis table denoting the likelihood of a signal peptide being present. 
 <br><br>
 
-```{r}
+```{r, fig.height= 301, fig.width = 600}
 knitr::include_graphics("../../media/SignalP.jpg") 
-# 2402×108
+# 1139×572
 ``` 
 
 **Figure 3**. Negative Signal-P analysis result. 
 <br><br>
 
-```{r}
+```{r, out.width= 500}
 knitr::include_graphics("../../media/TMHMMcharacteristics.png") 
-# 2402×108
 ``` 
 
 **Figure 4**. TMHMM analysis characteristics. 
 <br><br><br>
 
-```{r}
+```{r, out.width= 600}
 knitr::include_graphics("../../media/TMHMM.jpg") 
 # 2402×108
 ``` 
@@ -175,9 +174,8 @@ knitr::include_graphics("../../media/TMHMM.jpg")
 
 To obtain the predicted protein structure of the sequence, I conducted a PHYRE analysis. The result of this analysis can be seen in *Figure 6*. As can be observed, the predicted protein structure is rather small. 
 
-```{r, fig.width= 500, fig.height= 500}
+```{r, out.width= 400}
 knitr::include_graphics("../../media/final.casp.big.png") 
-# 2402×108
 ``` 
 
 **Figure 6**. PHYRE analysis result. 
@@ -185,9 +183,8 @@ knitr::include_graphics("../../media/final.casp.big.png")
 
 I constructed a cladogram based on the five sequences most and one least related to sequence 12, which I found in my BLAST analyses. As shown in *Figure 6*, the cladogram uses the coat protein of the peanut stunt virus as an outgroup. 
 
-```{r}
-knitr::include_graphics("../../media/cladogram.png") 
-# 2402×108
+```{r, out.width= 600}
+knitr::include_graphics("../../media/cladogram.png")
 ``` 
 
 **Figure 6**. Cladogram based on sequences related to sequence 12 using the coat protein of the peanut stunt virus as an outgroup. 
@@ -215,3 +212,9 @@ Nemes, K., Gellért, Á., Bóka, K., Vági, P., & Salánki, K. (2019). Symptom r
 Qiu, Y., Zhang, Y., Wang, C., Lei, R., Wu, Y., Li, X., & Zhu, S. (2018). Cucumber mosaic virus coat protein induces the development of chlorotic symptoms through interacting with the chloroplast ferredoxin I protein. Scientific Reports, 8(1). <a class="plain-link" href="https://doi.org/10.1038/s41598-018-19525-5">https://doi.org/10.1038/s41598-018-19525-5</a>
 
 Zhang, X.-P., Liu, D.-S., Yan, T., Fang, X.-D., Dong, K., Xu, J., Wang, Y., Yu, J.-L., & Wang, X.-B. (2017). Cucumber mosaic virus coat protein modulates the accumulation of 2B protein and antiviral silencing that causes symptom recovery in Planta. PLOS Pathogens, 13(7). <a class="plain-link" href="https://doi.org/10.1371/journal.ppat.1006522">https://doi.org/10.1371/journal.ppat.1006522</a>
+
+```{bash, message = FALSE, include = FALSE}
+git add index.Rmd
+git commit -m "automatic"
+git push
+```
