@@ -215,6 +215,7 @@ Zhang, X.-P., Liu, D.-S., Yan, T., Fang, X.-D., Dong, K., Xu, J., Wang, Y., Yu, 
 
 ```{bash, message = FALSE, include = FALSE}
 git add index.Rmd
+git add index.html
 git commit -m "automatic"
 git push
 ```
