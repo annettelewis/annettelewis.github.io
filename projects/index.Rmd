@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Projects
 
 ### BIOL-3100 [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)!
+### Molecular Biology: [Final Project](https://annettelewis.github.io/projects/BIOL_3550_final_project/)
+
 
 ---
 
