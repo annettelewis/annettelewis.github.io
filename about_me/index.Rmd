@@ -23,11 +23,11 @@ My name is Annette and I am an upcoming biology graduate from Utah Valley Univer
 
 My academic journey has fostered a strong foundation in data analysis, and I am proficient in utilizing RStudio for conducting research and analyzing complex biological data. I am eager to contribute my skills to biology projects that hold the potential to make a positive impact on society.
 
+My aspirations lie in advancing biological research, unraveling the mysteries of the natural world, and applying scientific knowledge to improve human health and well-being. I believe that diversity drives innovation, and as a Latina scientist, I am dedicated to promoting inclusivity and collaboration within the scientific community.
+
 ```{r, out.height= 300, out.width = 200}
 knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 ``` 
-
-My aspirations lie in advancing biological research, unraveling the mysteries of the natural world, and applying scientific knowledge to improve human health and well-being. I believe that diversity drives innovation, and as a Latina scientist, I am dedicated to promoting inclusivity and collaboration within the scientific community.
 
 #### Let's connect and explore new opportunities together!
 
