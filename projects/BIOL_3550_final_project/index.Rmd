@@ -212,10 +212,3 @@ Nemes, K., Gellért, Á., Bóka, K., Vági, P., & Salánki, K. (2019). Symptom r
 Qiu, Y., Zhang, Y., Wang, C., Lei, R., Wu, Y., Li, X., & Zhu, S. (2018). Cucumber mosaic virus coat protein induces the development of chlorotic symptoms through interacting with the chloroplast ferredoxin I protein. Scientific Reports, 8(1). <a class="plain-link" href="https://doi.org/10.1038/s41598-018-19525-5">https://doi.org/10.1038/s41598-018-19525-5</a>
 
 Zhang, X.-P., Liu, D.-S., Yan, T., Fang, X.-D., Dong, K., Xu, J., Wang, Y., Yu, J.-L., & Wang, X.-B. (2017). Cucumber mosaic virus coat protein modulates the accumulation of 2B protein and antiviral silencing that causes symptom recovery in Planta. PLOS Pathogens, 13(7). <a class="plain-link" href="https://doi.org/10.1371/journal.ppat.1006522">https://doi.org/10.1371/journal.ppat.1006522</a>
-
-```{bash, message = FALSE, include = FALSE}
-git add index.Rmd
-git add index.html
-git commit -m "automatic"
-git push
-```
