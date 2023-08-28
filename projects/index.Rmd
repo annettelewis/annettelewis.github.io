@@ -12,9 +12,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Projects
 
-### Data Science for Biologists: [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)!
-### Molecular Biology: [Final Project](https://annettelewis.github.io/projects/BIOL_3550_final_project/)
+### Data Science for Biologists: [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)
+```{r}
+knitr::include_graphics("../media/Thumbnail_finalproject.png") 
+# 
+``` 
 
+### Molecular Biology: [Final Project](https://annettelewis.github.io/projects/BIOL_3550_final_project/)
+```{r}
+knitr::include_graphics("../media/final.casp.big.png") 
+# 
+``` 
 
 ---
 
