@@ -18,22 +18,13 @@ knitr::include_graphics("../media/Thumbnail_finalproject.png")
 # 1410 x 1266
 ``` 
 
+---
+
 ### Molecular Biology: [Final Project](https://annettelewis.github.io/projects/BIOL_3550_final_project/)
 ```{r}
 knitr::include_graphics("../media/final.casp.big.png") 
 ``` 
 
----
-
-**Courses/Certifications:**
-
-[Course: Artificial Intelligence in Bioinformatics](https://www.futurelearn.com/courses/artificial-intelligence-in-bioinformatics/3/todo/167078)
-
-[Course: Clinical Bioinformatics](https://www.futurelearn.com/courses/bioinformatics/10/todo/73533)
-
-[Course: Introductory Bioinformatics](https://www.ebi.ac.uk/training/online/courses/introductory-bioinformatics-pathway/#vf-tabs__section--overview)
-
-[Codeacademy](https://www.codecademy.com/catalog)
 
 ```{bash, message = FALSE, include = FALSE}
 git add index.Rmd
