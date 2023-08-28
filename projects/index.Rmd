@@ -13,15 +13,14 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ## Projects
 
 ### Data Science for Biologists: [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)
-```{r, fig.width = 400}
+```{r, fig.width =400, fig.height=359}
 knitr::include_graphics("../media/Thumbnail_finalproject.png") 
-# 
+# 1410 x 1266
 ``` 
 
 ### Molecular Biology: [Final Project](https://annettelewis.github.io/projects/BIOL_3550_final_project/)
 ```{r}
 knitr::include_graphics("../media/final.casp.big.png") 
-# 
 ``` 
 
 ---
