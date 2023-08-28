@@ -74,17 +74,6 @@ A more extensive project that I have done can be seen [here](https://annettelewi
 
 <br><br><br>
 
----
-**Music Links**
-
-[Hand Exercises](https://youtu.be/TSrfB7JIzxY)
-
-[Best Part Karaoke](https://www.youtube.com/watch?v=cpzT2M2x_Kw) 
-
-[Just The Two of Us Karaoke](https://www.youtube.com/watch?v=bgtb1G9R0P8)
-
-[Let Us Adore You (Reprise) Sheet Music](https://musescore.com/user/115287/scores/5701224)
-
 ```{bash, message = FALSE, include = FALSE}
 git add index.Rmd
 git commit -m "automatic"
