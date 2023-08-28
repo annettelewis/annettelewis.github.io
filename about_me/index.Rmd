@@ -31,7 +31,7 @@ knitr::include_graphics("../media/professional_photo.jpeg") # 2996x4494
 
 #### Let's connect and explore new opportunities together!
 
-Here is my [LinkedIn](https://www.linkedin.com/in/annette-lewis-68314b216/), my [resume](https://annettelewis.github.io/media/Annette_Lewis_Resume.pdf), and [CV](https://annettelewis.github.io/media/CV_Lewis.pdf)
+##### Here is my [LinkedIn](https://www.linkedin.com/in/annette-lewis-68314b216/), my [resume](https://annettelewis.github.io/media/Annette_Lewis_Resume.pdf), and [CV](https://annettelewis.github.io/media/CV_Lewis.pdf)
 
 I love to play the violin in my free time, it's fun!
 
