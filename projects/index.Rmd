@@ -29,6 +29,10 @@ knitr::include_graphics("../media/final.casp.big.png")
 ---
 
 ### Mycology: [Research Project](https://annettelewis.github.io/projects/BOT_3500/)
+```{r}
+knitr::include_graphics("./BOT_3500/Screenshot 2023-10-01 at 9.37.35 PM.png") 
+``` 
+
 
 ```{bash, message = FALSE, include = FALSE}
 git add index.Rmd
