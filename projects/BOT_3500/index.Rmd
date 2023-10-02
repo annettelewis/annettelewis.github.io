@@ -1,0 +1,243 @@
+---
+output: 
+  html_document:
+    code_folding: hide
+    toc: yes
+    toc_float:
+      collapsed: false
+    self_contained: yes
+    keep_md: no
+pagetitle: community_phylogeny_decomposition
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{css}
+body {
+  background-color: lightblue;
+}
+
+#title {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#introduction{
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#methods {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#phylogenetic-tree {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#combinations {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#branch-lengths {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#experimental-results {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+```
+
+## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/)
+
+### Introduction
+
+**Does Higher Phylogenetic Diversity in Fungal Communities Lead to Faster Decomposition?**
+
+For over a billion years, fungi have played a crucial role on Earth for their unique diversity and decomposing ability. Within the last few decades, fungi have become a focal point for industrial applications and research, contributing to the body of knowledge on the kingdom of Fungi (Lange, 2014). Furthermore, saprotrophic fungi consist of saprophytes, which break down any dead and decaying matter into simpler substances for plants to uptake. Fungal decomposition allows the soil in any plant life to be filled with essential nutrients and minerals. If plant life did not exist, humans would not be able to live as we rely on trees for oxygen and plants for consumption to provide our bodies with essential necessities. Phylogenetic trees are often used to visualize the relationship between species, as many species have multiple branches. Exploring the diversity of fungi provides a glimpse of success between which specific fungal species are the best at decomposing. 
+
+Researchers over the years have hypothesized and tested various ways to increase fungal decomposition. It was discovered that when establishing the relationship between moisture tolerance and decomposition rate time, there indeed was a linear relationship between the two factors (An et al., 2021). Ongoing research on ways to increase fungal decomposition allows answers to be given on how to increase the amount of nutrients and minerals provided for plant life and the rate at which plants grow. 
+
+The role of phylogenetic relatedness in fungal decomposition rates has not received much attention in research. With this being said, a study has looked into the effect of compost amendment on the promotion of fungal community composition and phylogenetic relatedness, such that decomposition by Dothidiomycetes was accelerated (Miao et al., 2022).
+
+Our research intends to compare four different kinds of fungi (two from the same genus, one from a different family, and one from a different phylum) and their ability to decompose. We will compile data analytics in order to report our findings. Additionally, we intend to observe and record any fungal interactions and their decomposition benefits individually and collectively. We can use the scientific method process and increase our lab technique skills through our research. 
+
+### Methods
+
+We will use four saprophytic fungal species Aspergillus niger, Aspergillus fumigatus, and Fusarium keratoplasticum. These specimens will be purchased from ATCC.org as freeze-dried and frozen samples. We also will use Pleurotus ostreatus, already available from Dr. Zahn’s laboratory. The selected fungal species were chosen so that they would include two species in the same genus (Aspergillus), one species in a different family (Fusarium), and an outgroup (Pleurotus). These fungal species will then be cultured in cellulose agar and grown to a splitting stage for further testing.
+
+```{r}
+knitr::include_graphics("./Screenshot 2023-10-01 at 9.35.22 PM.png")
+```
+
+The cultured fungal samples will be placed in **15 combinations** to test their ability to decompose as individual fungi populations and combined communities. For each of the combinations, there will be six replicates. The combinations of fungi will be used to assess each of the four individual species of fungi on their own, alongside how they work with another species of fungi in groups of two, three, and finally, all four. In every combination, all species of fungi will be introduced to the petri dish with cellophane at a similar measurable weight and at the same time. Each petri dish will have five milliliters of water added.
+
+ These combinations of fungi (e.g., A+B, A+B+C, A+B+C+D, B+C, ...) will be assessed after a month of growth on how well they can decompose the sheet of cellophane they are placed on. Each replicate will be destructively sampled by stripping the cellophane sheets from fungi and agar residue using alcohol. The sheets of decomposed cellophane will then be dehydrated and compared to their initial starting weights.
+ 
+Alongside our results, we will obtain genetic information based on the ITS1 gene in GenBank and construct a phylogenetic tree. We will calculate the phylogenetic relatedness of our species via branch length distance, using ape 5.0 in R. This portion of the research will be conducted to observe species' phylogenetic diversity and decomposition abilities. 
+
+```{r}
+knitr::include_graphics("./Screenshot 2023-10-01 at 9.37.35 PM.png")
+```
+
+```{r}
+# Load in libraries
+library(ape)
+library(phangorn)
+library(ggplot2)
+library(tidyverse)
+library(kableExtra)
+```
+
+### Phylogenetic tree
+
+Initial phylogenetic tree setup. The sequences were obtained from the NCBI and aligned using the EMBL-EBI's Multiple Sequence Alignment tool, MUSCLE. This tree has no outgroup selected and serves to show the most basic form of this tree.
+
+```{r}
+alignment_file <- "./muscle_new_sequence_alignment.fasta"
+fungi <- read.phyDat(alignment_file, format = "fasta")
+dist_matrix <- dist.ml(fungi, model = "JC69")
+nj_tree <- nj(dist_matrix)
+
+plot(nj_tree)
+```
+
+Phylogenetic tree rooted on *Pericharax heteroraphis*, a sea sponge, including species names.
+
+```{r}
+# Extract species names from the tip labels
+species_names <- sapply(strsplit(nj_tree$tip.label, " "), function(x) paste(x[1:2], collapse = " "))
+
+# Update the labels of the rooted tree
+nj_tree$tip.label <- species_names
+
+# Replace these placeholders with the actual species names in the same order as your tip labels
+species_names <- c(
+  "Aspergillus niger",
+  "Aspergillus fumigatus",
+  "Fusarium keratoplasticum",
+  "Pleurotus ostreatus",
+  "Pericharax heteroraphis"
+)
+nj_tree$tip.label <- species_names
+outgroup_name <- "Pericharax heteroraphis"
+outgroup_index <- which(nj_tree$tip.label == outgroup_name)
+nj_tree_rooted <- root(nj_tree, outgroup_index)
+
+plot(nj_tree_rooted)
+```
+
+### Combinations
+
+The different combinations we plan to test:
+
+```{r, include = TRUE, message = TRUE}
+# Test for different combinations
+species_combinations <- list(
+  "Aspergillus niger", #A
+  "Aspergillus fumigatus", #B
+  "Fusarium keratoplasticum", #C
+  "Pleurotus ostreatus", #D
+  c("Aspergillus niger", "Aspergillus fumigatus"), #A+B
+  c("Aspergillus niger", "Fusarium keratoplasticum"), #A+C
+  c("Aspergillus niger", "Pleurotus ostreatus"), #A+D
+  c("Aspergillus fumigatus", "Fusarium keratoplasticum"), #B+C
+  c("Aspergillus fumigatus", "Pleurotus ostreatus"), #B+D
+  c("Fusarium keratoplasticum", "Pleurotus ostreatus"), #C+D
+  c("Aspergillus niger", "Aspergillus fumigatus", "Fusarium keratoplasticum"), #A+B+C
+  c("Aspergillus niger", "Aspergillus fumigatus", "Pleurotus ostreatus"), #A+B+D
+  c("Aspergillus niger", "Fusarium keratoplasticum", "Pleurotus ostreatus"), #A+C+D
+  c("Aspergillus fumigatus", "Fusarium keratoplasticum", "Pleurotus ostreatus"), #B+C+D
+  c("Aspergillus niger", "Aspergillus fumigatus", "Fusarium keratoplasticum", "Pleurotus ostreatus") #A+B+C+D
+)
+
+df <- data.frame(
+  Species =  c("Aspergillus niger", #A
+  "Aspergillus fumigatus", #B
+  "Fusarium keratoplasticum", #C
+  "Pleurotus ostreatus", #D
+  "Aspergillus niger and Aspergillus fumigatus", #A+B
+  "Aspergillus niger and Fusarium keratoplasticum", #A+C
+  "Aspergillus niger and Pleurotus ostreatus", #A+D
+  "Aspergillus fumigatus and Fusarium keratoplasticum", #B+C
+  "Aspergillus fumigatus and Pleurotus ostreatus", #B+D
+  "Fusarium keratoplasticum and Pleurotus ostreatus", #C+D
+  "Aspergillus niger, Aspergillus fumigatus, and Fusarium keratoplasticum", #A+B+C
+  "Aspergillus niger, Aspergillus fumigatus, and Pleurotus ostreatus", #A+B+D
+  "Aspergillus niger, Fusarium keratoplasticum, and Pleurotus ostreatus", #A+C+D
+  "Aspergillus fumigatus, Fusarium keratoplasticum, and Pleurotus ostreatus", #B+C+D
+  "Aspergillus niger, Aspergillus fumigatus, Fusarium keratoplasticum, and Pleurotus ostreatus"), #A+B+C+D
+  Combination = c("A", "B", "C", "D", "A+B", "A+C", "A+D", "B+C", "B+D", "C+D", "A+B+C", "A+B+D", "A+C+D", "B+C+D", "A+B+C+D")
+)
+
+df %>% kable() %>% 
+  kable_classic(lightable_options = "hover") %>%
+  scroll_box(height = "200px")
+```
+
+### Branch lengths
+
+```{r}
+# Function to calculate branch lengths based on the sea sponge
+compute_branch_length <- function(species_combination, nj_tree_rooted, outgroup) {
+  species_to_keep <- union(species_combination, outgroup)
+  sub_tree <- drop.tip(nj_tree_rooted, setdiff(nj_tree_rooted$tip.label, species_to_keep))
+  sub_tree <- drop.tip(sub_tree, outgroup)
+  sum(sub_tree$edge.length)
+}
+
+# Function to calculate branch lengths (general)
+compute_branch_length_gen <- function(species_combination, nj_tree_rooted, outgroup) {
+   species_to_keep <- union(species_combination, outgroup)
+   sub_tree <- drop.tip(nj_tree_rooted, setdiff(nj_tree_rooted$tip.label, species_to_keep))
+   return(sum(sub_tree$edge.length))
+}
+```
+
+```{r}
+results <- sapply(species_combinations, FUN = compute_branch_length, nj_tree_rooted = nj_tree_rooted, outgroup = outgroup_name)
+
+species_combinations_str <- sapply(species_combinations, function(x) paste(x, collapse=", "))
+
+results_gen <- sapply(species_combinations, FUN = compute_branch_length_gen, nj_tree_rooted = nj_tree_rooted, outgroup = outgroup_name)
+```
+
+**Main**. Compute branch lengths based on our sea sponge, *Pleurotus ostreatus*. In this, the branch lengths associated with the outgroup are excluded here after using it to root the tree.
+
+```{r}
+results_tbl <- tibble(Combination=species_combinations_str, Branch_Length=results)
+# Table with branch lengths based on the outgroup "Pericharax heteroraphis"
+results_tbl %>% kable() %>%
+  kable_classic(lightable_options = "hover") %>%
+  scroll_box(height = "200px")
+```
+
+<br>
+
+**General**. Below shows the general branch length values where the outgroup's branch length is kept in the final calculation.
+
+```{r}
+results_gen_tbl <- tibble(Combination=species_combinations_str, Branch_Length=results_gen)
+# Table with branch lengths based on the outgroup "Pericharax heteroraphis"
+results_gen_tbl %>% kable() %>%
+  kable_classic(lightable_options = "hover") %>%
+  scroll_box(height = "200px")
+```
+
+### Experimental results
+This project will be continued, I will add updates when possible!

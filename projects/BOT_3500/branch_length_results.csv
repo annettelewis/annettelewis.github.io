@@ -1,0 +1,16 @@
+Combination,Branch_Length
+Aspergillus niger,0.5286528216321864
+Aspergillus fumigatus,0.40230541086320837
+Fusarium keratoplasticum,0.25843780279514084
+Pleurotus ostreatus,0.05191657951134961
+"Aspergillus niger, Aspergillus fumigatus",0.5781378652415732
+"Aspergillus niger, Fusarium keratoplasticum",0.584988131472691
+"Aspergillus niger, Pleurotus ostreatus",0.5805694011435361
+"Aspergillus fumigatus, Fusarium keratoplasticum",0.458640720703713
+"Aspergillus fumigatus, Pleurotus ostreatus",0.45422199037455796
+"Fusarium keratoplasticum, Pleurotus ostreatus",0.31035438230649043
+"Aspergillus niger, Aspergillus fumigatus, Fusarium keratoplasticum",0.8108833587089886
+"Aspergillus niger, Aspergillus fumigatus, Pleurotus ostreatus",0.8064646283798337
+"Aspergillus niger, Fusarium keratoplasticum, Pleurotus ostreatus",0.7379559574613588
+"Aspergillus fumigatus, Fusarium keratoplasticum, Pleurotus ostreatus",0.6116085466923807
+"Aspergillus niger, Aspergillus fumigatus, Fusarium keratoplasticum, Pleurotus ostreatus",0.9638511846976564
