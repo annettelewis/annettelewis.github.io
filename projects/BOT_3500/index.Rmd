@@ -77,9 +77,11 @@ The role of phylogenetic relatedness in fungal decomposition rates has not recei
 
 Our research intends to compare four different kinds of fungi (two from the same genus, one from a different family, and one from a different phylum) and their ability to decompose. We will compile data analytics in order to report our findings. Additionally, we intend to observe and record any fungal interactions and their decomposition benefits individually and collectively. We can use the scientific method process and increase our lab technique skills through our research. 
 
+*1in by 1in*
+
 ### Methods
 
-We will use four saprophytic fungal species Aspergillus niger, Aspergillus fumigatus, and Fusarium keratoplasticum. These specimens will be purchased from ATCC.org as freeze-dried and frozen samples. We also will use Pleurotus ostreatus, already available from Dr. Zahn’s laboratory. The selected fungal species were chosen so that they would include two species in the same genus (Aspergillus), one species in a different family (Fusarium), and an outgroup (Pleurotus). These fungal species will then be cultured in cellulose agar and grown to a splitting stage for further testing.
+We will use four saprophytic fungal species Aspergillus niger, Fusarium keratoplasticum, and Fusarium keratoplasticum. These specimens will be purchased from ATCC.org as freeze-dried and frozen samples. We also will use Pleurotus ostreatus, already available from Dr. Zahn’s laboratory. The selected fungal species were chosen so that they would include two species in the same genus (Aspergillus), one species in a different family (Fusarium), and an outgroup (Pleurotus). These fungal species will then be cultured in cellulose agar and grown to a splitting stage for further testing.
 
 ```{r}
 knitr::include_graphics("./Screenshot 2023-10-01 at 9.35.22 PM.png")
@@ -102,24 +104,18 @@ library(phangorn)
 library(ggplot2)
 library(tidyverse)
 library(kableExtra)
+library(plotly)
 ```
 
 ### Phylogenetic tree
 
-Initial phylogenetic tree setup. The sequences were obtained from the NCBI and aligned using the EMBL-EBI's Multiple Sequence Alignment tool, MUSCLE. This tree has no outgroup selected and serves to show the most basic form of this tree.
+Initial phylogenetic tree setup. The sequences were obtained from the NCBI, based on the ITS1 gene, and aligned using the EMBL-EBI's Multiple Sequence Alignment tool, MUSCLE. This tree has no outgroup selected and serves to show the most basic form of this tree.
 
 ```{r}
-alignment_file <- "./muscle_new_sequence_alignment.fasta"
+alignment_file <- "./3_muscle_alignment.fasta"
 fungi <- read.phyDat(alignment_file, format = "fasta")
 dist_matrix <- dist.ml(fungi, model = "JC69")
 nj_tree <- nj(dist_matrix)
-
-plot(nj_tree)
-```
-
-Phylogenetic tree rooted on *Pericharax heteroraphis*, a sea sponge, including species names.
-
-```{r}
 # Extract species names from the tip labels
 species_names <- sapply(strsplit(nj_tree$tip.label, " "), function(x) paste(x[1:2], collapse = " "))
 
@@ -129,7 +125,6 @@ nj_tree$tip.label <- species_names
 # Replace these placeholders with the actual species names in the same order as your tip labels
 species_names <- c(
   "Aspergillus niger",
-  "Aspergillus fumigatus",
   "Fusarium keratoplasticum",
   "Pleurotus ostreatus",
   "Pericharax heteroraphis"
@@ -138,7 +133,11 @@ nj_tree$tip.label <- species_names
 outgroup_name <- "Pericharax heteroraphis"
 outgroup_index <- which(nj_tree$tip.label == outgroup_name)
 nj_tree_rooted <- root(nj_tree, outgroup_index)
+```
 
+Phylogenetic tree rooted on *Pericharax heteroraphis*, a sea sponge, including species names.
+
+```{r}
 plot(nj_tree_rooted)
 ```
 
@@ -150,39 +149,23 @@ The different combinations we plan to test:
 # Test for different combinations
 species_combinations <- list(
   "Aspergillus niger", #A
-  "Aspergillus fumigatus", #B
-  "Fusarium keratoplasticum", #C
-  "Pleurotus ostreatus", #D
-  c("Aspergillus niger", "Aspergillus fumigatus"), #A+B
-  c("Aspergillus niger", "Fusarium keratoplasticum"), #A+C
-  c("Aspergillus niger", "Pleurotus ostreatus"), #A+D
-  c("Aspergillus fumigatus", "Fusarium keratoplasticum"), #B+C
-  c("Aspergillus fumigatus", "Pleurotus ostreatus"), #B+D
-  c("Fusarium keratoplasticum", "Pleurotus ostreatus"), #C+D
-  c("Aspergillus niger", "Aspergillus fumigatus", "Fusarium keratoplasticum"), #A+B+C
-  c("Aspergillus niger", "Aspergillus fumigatus", "Pleurotus ostreatus"), #A+B+D
-  c("Aspergillus niger", "Fusarium keratoplasticum", "Pleurotus ostreatus"), #A+C+D
-  c("Aspergillus fumigatus", "Fusarium keratoplasticum", "Pleurotus ostreatus"), #B+C+D
-  c("Aspergillus niger", "Aspergillus fumigatus", "Fusarium keratoplasticum", "Pleurotus ostreatus") #A+B+C+D
+  "Fusarium keratoplasticum", #B
+  "Pleurotus ostreatus", #C
+  c("Aspergillus niger", "Fusarium keratoplasticum"), #A+B
+  c("Aspergillus niger", "Pleurotus ostreatus"), #A+C
+  c("Fusarium keratoplasticum", "Pleurotus ostreatus"), #B+C
+  c("Aspergillus niger", "Fusarium keratoplasticum", "Pleurotus ostreatus") #A+B+C
 )
 
 df <- data.frame(
   Species =  c("Aspergillus niger", #A
-  "Aspergillus fumigatus", #B
-  "Fusarium keratoplasticum", #C
-  "Pleurotus ostreatus", #D
-  "Aspergillus niger and Aspergillus fumigatus", #A+B
-  "Aspergillus niger and Fusarium keratoplasticum", #A+C
-  "Aspergillus niger and Pleurotus ostreatus", #A+D
-  "Aspergillus fumigatus and Fusarium keratoplasticum", #B+C
-  "Aspergillus fumigatus and Pleurotus ostreatus", #B+D
-  "Fusarium keratoplasticum and Pleurotus ostreatus", #C+D
-  "Aspergillus niger, Aspergillus fumigatus, and Fusarium keratoplasticum", #A+B+C
-  "Aspergillus niger, Aspergillus fumigatus, and Pleurotus ostreatus", #A+B+D
-  "Aspergillus niger, Fusarium keratoplasticum, and Pleurotus ostreatus", #A+C+D
-  "Aspergillus fumigatus, Fusarium keratoplasticum, and Pleurotus ostreatus", #B+C+D
-  "Aspergillus niger, Aspergillus fumigatus, Fusarium keratoplasticum, and Pleurotus ostreatus"), #A+B+C+D
-  Combination = c("A", "B", "C", "D", "A+B", "A+C", "A+D", "B+C", "B+D", "C+D", "A+B+C", "A+B+D", "A+C+D", "B+C+D", "A+B+C+D")
+  "Fusarium keratoplasticum", #B
+  "Pleurotus ostreatus", #C
+  "Aspergillus niger and Fusarium keratoplasticum", #A+B
+  "Aspergillus niger and Pleurotus ostreatus", #A+C
+  "Fusarium keratoplasticum and Pleurotus ostreatus", #B+C
+  "Aspergillus niger, Fusarium keratoplasticum, and Pleurotus ostreatus"), #A+B+C 
+  Combination = c("A", "B", "C", "A+B", "A+C", "B+C", "A+B+C")
 )
 
 df %>% kable() %>% 
@@ -220,11 +203,13 @@ results_gen <- sapply(species_combinations, FUN = compute_branch_length_gen, nj_
 **Main**. Compute branch lengths based on our sea sponge, *Pleurotus ostreatus*. In this, the branch lengths associated with the outgroup are excluded here after using it to root the tree.
 
 ```{r}
-results_tbl <- tibble(Combination=species_combinations_str, Branch_Length=results)
-# Table with branch lengths based on the outgroup "Pericharax heteroraphis"
+results_tbl <- tibble(Species=species_combinations_str, Combination=df$Combination, Branch_Length=results)
+# Table with branch lengths where branch lengths associated with the outgroup "Pericharax heteroraphis" were removed
 results_tbl %>% kable() %>%
   kable_classic(lightable_options = "hover") %>%
   scroll_box(height = "200px")
+summary(results_tbl$Branch_Length)
+sd(results_tbl$Branch_Length)
 ```
 
 <br>
@@ -232,12 +217,87 @@ results_tbl %>% kable() %>%
 **General**. Below shows the general branch length values where the outgroup's branch length is kept in the final calculation.
 
 ```{r}
-results_gen_tbl <- tibble(Combination=species_combinations_str, Branch_Length=results_gen)
+results_gen_tbl <- tibble(Species=species_combinations_str, Combination=df$Combination, Branch_Length=results_gen)
 # Table with branch lengths based on the outgroup "Pericharax heteroraphis"
-results_gen_tbl %>% kable() %>%
+results_gen_tbl %>% 
+  kable() %>%
   kable_classic(lightable_options = "hover") %>%
   scroll_box(height = "200px")
+summary(results_gen_tbl$Branch_Length)
+sd(results_gen_tbl$Branch_Length)
 ```
+
+*Our plan will be to stick with this one as the branch lengths here have a slightly larger standard deviation, but this difference is negligible*
 
 ### Experimental results
 This project will be continued, I will add updates when possible!
+
+General Results: 
+
+```{r}
+new <- data.frame(
+  Species =  c("Aspergillus niger", #A
+  "Fusarium keratoplasticum", #B
+  "Pleurotus ostreatus", #C
+  "Aspergillus niger and Fusarium keratoplasticum", #A+B
+  "Aspergillus niger and Pleurotus ostreatus", #A+C
+  "Fusarium keratoplasticum and Pleurotus ostreatus", #B+C
+  "Aspergillus niger, Fusarium keratoplasticum, and Pleurotus ostreatus"),
+Species_short =  c("A. niger", #A
+  "F. keratoplasticum", #B
+  "P. ostreatus", #C
+  "A. niger and F. keratoplasticum", #A+B
+  "A. niger and P. ostreatus", #A+C
+  "F. keratoplasticum and P. ostreatus", #B+C
+  "A. niger, F. keratoplasticum, and P. ostreatus"))
+merged_data <- merge(results_gen_tbl, new, by = "Species")
+
+df <- results_gen_tbl %>%
+  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length)) +
+  geom_point() +
+  theme_classic() +
+  labs(title = "Branch length based on species combination",
+       x = "Species combination",
+       y = "Branch length", 
+       legend = labs(title = "Legend Title",
+                     color = "Combination",
+                     shape = "Species")) +
+  theme(axis.text.x = element_text(face = "italic"))
+
+ggplotly(df)
+```
+
+```{r}
+results_gen_tbl %>%
+  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length, color = Combination, shape = Species)) +
+  geom_point() +
+  theme_classic() +
+  labs(title = "Branch length based on species combination",
+       x = "Species combination",
+       y = "Branch length") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, face = "italic"))
+
+
+results_gen_tbl %>%
+  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length, color = Species)) +
+  geom_point() +
+  theme_classic() +
+  labs(title = "Branch length based on species combination",
+       x = "Species combination",
+       y = "Branch length") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, face = "italic"))
+```
+
+Other results (just representative)
+
+```{r}
+results_tbl %>%
+  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length)) +
+  geom_point() +
+  theme_classic() +
+  labs(title = "Branch length based on species combination",
+       x = "Species combination",
+       y = "Branch length")
+```
+
+*NOTE:* This will be compared to the actual experimental setup.
