@@ -651,7 +651,7 @@ summary_fit <- summary(fit)
 r_squared <- summary_fit$r.squared
 p_value <- coef(summary_fit)[2,4]
 
-# Create the scatter plot with regression line
+# Scatter plot with regression line
 p <- ggplot(data, aes(x = branch_length, y = species_coverage, color = combinations)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE, color = "blue") + # This line adds the line of best fit
@@ -698,9 +698,7 @@ grouped_data <- data %>%
   summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
 
 ggplot(data) +
-  # Adding the "bar-lines"
   geom_segment(data = grouped_data, aes(x = combinations, xend = combinations, y = 0, yend = mean_species_coverage, color = species), position = position_dodge(width = 0.9)) +
-  # Adding the individual data points
   geom_boxplot(aes(x = combinations, y = species_coverage, color = species), position = position_dodge(width = 0.9)) +
   ylim(0, 100) +
   labs(title = "Species Coverage by Combinations", y = "Species Coverage (%)", x = "Combinations")
