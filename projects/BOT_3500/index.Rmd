@@ -25,7 +25,7 @@ body {
   margin: 15px;
   padding: 10px;
 }
-#introduction{
+#abstract{
   background-color: white;
   border-radius: 5px;
   margin: 15px;
@@ -61,36 +61,42 @@ body {
   margin: 15px;
   padding: 10px;
 }
+#all_visualizations_together {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
+#not-as-good-graphs {
+  background-color: white;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 10px;
+}
 ```
 
 ## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/)
 
-### Introduction
+## **Abstract**
 
-**Does Higher Phylogenetic Diversity in Fungal Communities Lead to Faster Decomposition?**
+**Does Greater Phylogenetic Distance Affect Competition Outcomes in Fungal Communities?**
 
-For over a billion years, fungi have played a crucial role on Earth for their unique diversity and decomposing ability. Within the last few decades, fungi have become a focal point for industrial applications and research, contributing to the body of knowledge on the kingdom of Fungi (Lange, 2014). Furthermore, saprotrophic fungi consist of saprophytes, which break down any dead and decaying matter into simpler substances for plants to uptake. Fungal decomposition allows the soil in any plant life to be filled with essential nutrients and minerals. If plant life did not exist, humans would not be able to live as we rely on trees for oxygen and plants for consumption to provide our bodies with essential necessities. Phylogenetic trees are often used to visualize the relationship between species, as many species have multiple branches. Exploring the diversity of fungi provides a glimpse of success between which specific fungal species are the best at decomposing. 
+Annette Lewis, Kendall Holcomb, Bárbara Suassuna Schincariol, Josh Stubbs, Geoffery Zahn PhD
 
-Researchers over the years have hypothesized and tested various ways to increase fungal decomposition. It was discovered that when establishing the relationship between moisture tolerance and decomposition rate time, there indeed was a linear relationship between the two factors (An et al., 2021). Ongoing research on ways to increase fungal decomposition allows answers to be given on how to increase the amount of nutrients and minerals provided for plant life and the rate at which plants grow. 
+Fungi play a critical role in decomposition, affecting nutrient cycling at a global scale. Saprotrophic fungi competitively decompose dead organic matter. However, the role of phylogenetic relatedness on interspecific competition in fungal communities has not received much attention. The theory of phylogenetic over-dispersion suggests that species within a community tend to be less related than expected by chance, therefore limiting competition due to functional redundancy. Similarly, Darwin’s naturalization hypothesis suggests that taxonomically distinct invaders might experience reduced competition and resistance. In this study, we chose three different saprotrophic fungal species with varying relatedness: *Aspergillus niger* and *Fusarium keratoplasticum* (from the same family), and *Pleurotus ostreatus* (from a different phylum). These species were chosen based on decomposition abilities and phylogenetic distances. These species were cultured and placed in seven combinations to assess their ability to decompose and compete as individual fungal populations and as combined communities (e.g., A, B, A+B, B+C, and A+B+C). Each species was placed near a sterilized piece of paper such that competition was evaluated by analyzing the paper coverage in Petri dishes over three weeks. Each Petri dish was analyzed individually based on the average percentage of paper covered and, within combined communities, the percentage of paper each species covered. Interactions between each species and the percentage of the paper covered was recorded for further analysis. Assessing paper coverage allows for the observation of any potential competitive inhibition of decomposition. We hypothesize that decomposing and competitive abilities would be the strongest with *A. niger*. Despite the fast growth rate of *A. niger* individually, preliminary results suggest that it was outcompeted when paired with other species. This research highlights the potential nuances in fungal community interactions influenced by phylogenetic relationships, shedding light on the principles of phylogenetic overdispersion and Darwin’s naturalization hypothesis.
 
-The role of phylogenetic relatedness in fungal decomposition rates has not received much attention in research. With this being said, a study has looked into the effect of compost amendment on the promotion of fungal community composition and phylogenetic relatedness, such that decomposition by Dothidiomycetes was accelerated (Miao et al., 2022).
+## **Methods**
 
-Our research intends to compare four different kinds of fungi (two from the same genus, one from a different family, and one from a different phylum) and their ability to decompose. We will compile data analytics in order to report our findings. Additionally, we intend to observe and record any fungal interactions and their decomposition benefits individually and collectively. We can use the scientific method process and increase our lab technique skills through our research. 
-
-*1in by 1in*
-
-### Methods
-
-We will use four saprophytic fungal species Aspergillus niger, Fusarium keratoplasticum, and Fusarium keratoplasticum. These specimens will be purchased from ATCC.org as freeze-dried and frozen samples. We also will use Pleurotus ostreatus, already available from Dr. Zahn’s laboratory. The selected fungal species were chosen so that they would include two species in the same genus (Aspergillus), one species in a different family (Fusarium), and an outgroup (Pleurotus). These fungal species will then be cultured in cellulose agar and grown to a splitting stage for further testing.
+We used three saprophytic fungal species *Aspergillus niger*, *Fusarium keratoplasticum*, and *Pleurotus ostreatus*. *A. niger* and *F. keratoplasticum* will be purchased from ATCC.org as freeze-dried and frozen samples. *P. ostreatus* was already available from Dr. Zahn’s laboratory. These fungal species will then be cultured in Petri dishes.
 
 ```{r}
 knitr::include_graphics("./Screenshot 2023-10-01 at 9.35.22 PM.png")
 ```
 
-The cultured fungal samples will be placed in **15 combinations** to test their ability to decompose as individual fungi populations and combined communities. For each of the combinations, there will be six replicates. The combinations of fungi will be used to assess each of the four individual species of fungi on their own, alongside how they work with another species of fungi in groups of two, three, and finally, all four. In every combination, all species of fungi will be introduced to the petri dish with cellophane at a similar measurable weight and at the same time. Each petri dish will have five milliliters of water added.
+The cultured fungal samples will be placed in **7 combinations** to test their ability to decompose as individual fungi populations and combined communities. For each of the combinations, there will be six replicates. 
 
- These combinations of fungi (e.g., A+B, A+B+C, A+B+C+D, B+C, ...) will be assessed after a month of growth on how well they can decompose the sheet of cellophane they are placed on. Each replicate will be destructively sampled by stripping the cellophane sheets from fungi and agar residue using alcohol. The sheets of decomposed cellophane will then be dehydrated and compared to their initial starting weights.
- 
+*The sterilized paper's dimensions are: 1in by 1in*
+
 Alongside our results, we will obtain genetic information based on the ITS1 gene in GenBank and construct a phylogenetic tree. We will calculate the phylogenetic relatedness of our species via branch length distance, using ape 5.0 in R. This portion of the research will be conducted to observe species' phylogenetic diversity and decomposition abilities. 
 
 ```{r}
@@ -105,11 +111,16 @@ library(ggplot2)
 library(tidyverse)
 library(kableExtra)
 library(plotly)
+library(patchwork)
+library(dplyr)
+library(tidyr)
+library(gridExtra)
+theme_set(theme_minimal())
 ```
 
-### Phylogenetic tree
+### **Phylogenetic tree**
 
-Initial phylogenetic tree setup. The sequences were obtained from the NCBI, based on the ITS1 gene, and aligned using the EMBL-EBI's Multiple Sequence Alignment tool, MUSCLE. This tree has no outgroup selected and serves to show the most basic form of this tree.
+Initial phylogenetic tree setup. The sequences were obtained from the NCBI, based on the ITS region, and aligned using the EMBL-EBI's Multiple Sequence Alignment tool, MUSCLE. This tree has no outgroup selected and serves to show the most basic form of this tree.
 
 ```{r}
 alignment_file <- "./3_muscle_alignment.fasta"
@@ -141,7 +152,7 @@ Phylogenetic tree rooted on *Pericharax heteroraphis*, a sea sponge, including s
 plot(nj_tree_rooted)
 ```
 
-### Combinations
+## **Combinations**
 
 The different combinations we plan to test:
 
@@ -173,7 +184,7 @@ df %>% kable() %>%
   scroll_box(height = "200px")
 ```
 
-### Branch lengths
+## **Branch lengths**
 
 ```{r}
 # Function to calculate branch lengths based on the sea sponge
@@ -229,7 +240,7 @@ sd(results_gen_tbl$Branch_Length)
 
 *Our plan will be to stick with this one as the branch lengths here have a slightly larger standard deviation, but this difference is negligible*
 
-### Experimental results
+## **Experimental results**
 This project will be continued, I will add updates when possible!
 
 General Results: 
@@ -265,30 +276,11 @@ df <- results_gen_tbl %>%
   theme(axis.text.x = element_text(face = "italic"))
 
 ggplotly(df)
+
+w1 <- df
 ```
 
-```{r}
-results_gen_tbl %>%
-  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length, color = Combination, shape = Species)) +
-  geom_point() +
-  theme_classic() +
-  labs(title = "Branch length based on species combination",
-       x = "Species combination",
-       y = "Branch length") +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, face = "italic"))
-
-
-results_gen_tbl %>%
-  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length, color = Species)) +
-  geom_point() +
-  theme_classic() +
-  labs(title = "Branch length based on species combination",
-       x = "Species combination",
-       y = "Branch length") +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, face = "italic"))
-```
-
-Other results (just representative)
+Non plotly graph (showing same thing)
 
 ```{r}
 results_tbl %>%
@@ -301,3 +293,460 @@ results_tbl %>%
 ```
 
 *NOTE:* This will be compared to the actual experimental setup.
+
+```{r}
+data <- read.csv("./Community_Diversity_Phylogeny_Decomposition - main_sheet.csv")
+```
+
+### Line plot over time:
+
+```{r}
+# Week numbers
+data <- data %>%
+  arrange(date) %>%
+  mutate(week = paste("Week", dense_rank(date) - 1))
+
+# Line plot over time:
+time_series_data <- data %>%
+  group_by(week, combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+
+ggplot(time_series_data, aes(x = week, y = mean_species_coverage, color = combinations, linetype = species)) +
+  geom_line(aes(group = interaction(combinations, species))) +
+  ylim(0, 100) +
+  labs(title = "Mean Species Coverage Over Time", y = "Mean Species Coverage (%)", x = "Week")
+```
+
+Another line plot, not including individual species
+
+```{r}
+# Line plot over time for combinations only:
+time_series_combinations <- data %>%
+  group_by(week, combinations) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+
+ggplot(time_series_combinations, aes(x = week, y = mean_species_coverage, color = combinations)) +
+  geom_line(aes(group = combinations)) +
+  ylim(0, 100) +
+  labs(title = "Mean Species Coverage Over Time by Combinations", y = "Mean Species Coverage (%)", x = "Week")
+```
+
+### Comparison of coverage over time (highlighting individual species)
+
+```{r}
+# Now you can use the 'week' column in your ggplot2 plots
+grouped_week_data <- data %>%
+  group_by(week, combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE)) %>% 
+  filter(week != "Week 0")
+
+q1 <- ggplot(grouped_week_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(y = "Mean Species Coverage (%)", x = "Combinations") +
+  facet_wrap(~ week, ncol = 1)
+
+q1
+```
+
+Alphabetical
+
+```{r}
+data$combinations <- factor(data$combinations, levels = c("A", "B", "C", "A+B", "A+C", "B+C", "A+B+C"))
+
+grouped_week_data_alpha <- data %>%
+  group_by(week, combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE)) %>%
+  filter(week != "Week 0")
+
+# Create the ggplot with the grouped_week_data_alpha dataframe
+q2 <- ggplot(grouped_week_data_alpha, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(y = "Mean Species Coverage (%)", x = "Combinations") +
+  facet_wrap(~ week, ncol = 1)
+
+q2
+```
+
+Bond Length
+
+```{r}
+# Organize bond length in ascending order
+bond_length_order <- data %>%
+  group_by(combinations) %>%
+  summarise(avg_bond_length = mean(branch_length, na.rm = TRUE)) %>%
+  arrange(avg_bond_length) %>%
+  pull(combinations)
+
+data$combinations <- factor(data$combinations, levels = bond_length_order)
+
+grouped_week_data_bond <- data %>%
+  group_by(week, combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE)) %>%
+  filter(week != "Week 0")
+
+# Create the ggplot with the grouped_week_data_bond dataframe
+q3 <- ggplot(grouped_week_data_bond, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(y = "Mean Species Coverage (%)", x = "Combinations") +
+  facet_wrap(~ week, ncol = 1)
+
+q3
+```
+
+### Comparison of coverage over time (total)
+
+This one needs fixing (it's set up by date)
+
+```{r}
+data$combinations <- as.character(data$combinations)
+
+data <- data %>%
+  mutate(week = as.numeric(as.factor(date)) - 1) %>%
+  mutate(week = paste0("Week ", week))
+
+grouped_week_data <- data %>%
+  group_by(week, combinations) %>%
+  summarise(mean_total_coverage = mean(total_coverage, na.rm = TRUE)) %>%
+  filter(week != "Week 0")
+
+r1 <- ggplot(grouped_week_data, aes(x = combinations, y = mean_total_coverage, fill = combinations)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(y = "Mean Total Coverage (%)", x = "Combinations") +
+  facet_wrap(~ week, ncol = 1)
+
+r1
+```
+
+Alphabetical
+
+```{r}
+data$combinations <- factor(data$combinations, levels = c("A", "B", "C", "A+B", "A+C", "B+C", "A+B+C"))
+
+grouped_week_data_total <- data %>%
+  group_by(week, combinations) %>%
+  summarise(mean_total_coverage = mean(total_coverage, na.rm = TRUE)) %>%
+  filter(week != "Week 0")  # Exclude Week 0
+
+# Create the second plot (p2) for total coverage
+r2 <- ggplot(grouped_week_data_total, aes(x = combinations, y = mean_total_coverage, fill = combinations)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(y = "Mean Total Coverage (%)", x = "Combinations") +
+  facet_wrap(~ week, ncol = 1)
+
+r2
+```
+
+Bond Length
+
+```{r}
+bond_length_order <- data %>%
+  group_by(combinations) %>%
+  summarise(avg_bond_length = mean(branch_length, na.rm = TRUE)) %>%
+  arrange(avg_bond_length) %>%
+  pull(combinations)  # Extract the ordered combinations
+
+# Reorder combinations as a factor with levels based on bond lengths
+data$combinations <- factor(data$combinations, levels = bond_length_order)
+
+data <- data %>%
+  mutate(date = as.Date(date)) %>%
+  arrange(date) %>%
+  mutate(week = paste("Week", dense_rank(date)))
+
+# Calculate mean total coverage for each combination, grouped by week
+grouped_week_data_total <- data %>%
+  group_by(week, combinations) %>%
+  summarise(mean_total_coverage = mean(total_coverage, na.rm = TRUE)) %>%
+  filter(week != "Week 1")  # Assuming Week 1 is the baseline and you want to exclude it
+
+# Create a bar plot with the grouped_week_data_total
+r3 <- ggplot(grouped_week_data_total, aes(x = combinations, y = mean_total_coverage, fill = combinations)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(y = "Mean Total Coverage (%)", x = "Combinations") +
+  facet_wrap(~ week, ncol = 1)
+
+r3
+```
+
+## **All visualizations together**
+
+```{r}
+q1 <- q1 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+r1 <- r1 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+
+q2 <- q2 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+r2 <- r2 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+
+q3 <- q3 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+r3 <- r3 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+
+q1 + r1
+```
+
+Alphabet
+
+```{r}
+q2 + r2
+```
+
+Bond length
+
+```{r}
+q3 + r3
+```
+
+Scatterplot showing that there seems to be no relationship with total coverage:
+
+```{r}
+combination_data <- data %>%
+  group_by(combinations) %>%
+  summarise(branch_length = mean(branch_length, na.rm = TRUE),
+            total_coverage = mean(total_coverage, na.rm = TRUE),
+            species_coverage = mean(species_coverage, na.rm = TRUE))
+
+# Calculate the average branch length for each combination and set the order
+branch_length_order <- combination_data %>%
+  arrange(branch_length) %>%
+  pull(combinations)
+
+# Reorder combinations as a factor with levels based on branch lengths
+combination_data$combinations <- factor(combination_data$combinations, levels = branch_length_order)
+
+# Now create all three plots using the ordered combinations
+
+# Total Species Coverage by Branch Length
+p1 <- ggplot(combination_data, aes(x = combinations, y = total_coverage, label = combinations)) +
+  geom_point(aes(color = combinations), size = 4) +
+  geom_text(nudge_y = 1, check_overlap = TRUE) +  # Adjust nudge_y as needed to avoid overlap
+  labs(title = "Total Species Coverage by Branch Length",
+       x = "Combination",
+       y = "Total Species Coverage (%)") +
+  theme(legend.title = element_blank())
+
+# Species Coverage by Branch Length
+p2 <- ggplot(combination_data, aes(x = branch_length, y = species_coverage, label = combinations)) +
+  geom_point(aes(color = combinations), size = 4) +
+  geom_text(nudge_y = 1, check_overlap = TRUE) +  # Adjust nudge_y as needed to avoid overlap
+  labs(title = "Species Coverage by Branch Length",
+       x = "Combination",
+       y = "Species Coverage (%)") +
+  theme(legend.title = element_blank()) + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p1
+p2
+
+p1 + p2
+```
+
+---
+
+```{r}
+#----
+
+library(ggplot2)
+library(dplyr)
+
+# Calculate the mean of total coverage and branch length for each combination
+combination_data <- data %>%
+  group_by(combinations) %>%
+  summarise(branch_length = mean(branch_length, na.rm = TRUE),
+            mean_species_coverage = mean(species_coverage, na.rm = TRUE),
+            total_coverage = mean(total_coverage, na.rm = TRUE))
+
+# Create a scatter plot
+ggplot(combination_data, aes(x = branch_length, y = mean_species_coverage, size = total_coverage)) +
+  geom_point(aes(color = combinations), alpha = 0.7) +
+  scale_size_continuous(name = "Total Coverage", range = c(3, 10)) +
+  labs(title = "Branch Length and Species Coverage by Combinations",
+       x = "Branch Length",
+       y = "Mean Species Coverage (%)") +
+  theme(legend.title = element_blank())
+
+#--------- Phylogenetic tree (italicized)
+ # Function to plot the tree and highlight the path to each species/combination
+plot_tree_with_paths <- function(nj_tree_rooted, species_combinations, outgroup_name) {
+  plot(nj_tree_rooted, show.tip.label = TRUE, cex = 0.6)
+  
+  # Function to find edges leading to a node
+  find_edges_to_node <- function(tree, node) {
+    if (is.na(match(node, tree$tip.label))) {
+      # Node is an internal node
+      which(apply(tree$edge, 1, function(x) x[2] == node))
+    } else {
+      # Node is a tip
+      which(apply(tree$edge, 1, function(x) any(x == match(node, tree$tip.label))))
+    }
+  }
+
+  for (combination in species_combinations) {
+    species_to_keep <- c(combination, outgroup_name)
+    sub_tree <- drop.tip(nj_tree_rooted, setdiff(nj_tree_rooted$tip.label, species_to_keep))
+    nodes_to_highlight <- sub_tree$tip.label
+    
+    # Highlight each edge leading to the species or combination
+    for (node in nodes_to_highlight) {
+      edges <- find_edges_to_node(nj_tree_rooted, node)
+      for (edge in edges) {
+        edge_coords <- nj_tree_rooted$edge[edge, ]
+        x <- nj_tree_rooted$xx[edge_coords]
+        y <- nj_tree_rooted$yy[edge_coords]
+        lines(x, y, col = "red", lwd = 2)
+      }
+    }
+  }
+}
+
+# Call the function to plot the tree with paths
+plot_tree_with_paths(nj_tree_rooted, species_combinations, outgroup_name)
+```
+
+
+Look through this please:
+```{r}
+# ggplot(data, aes(y= total_coverage)) +
+#   
+#   geom_line( aes(x=branch_length), size=2, color="blue") + 
+#   geom_line( aes(x=combinations), size=2, color= "orange") +
+#   
+#   scale_x_continuous(
+#     
+#     # Features of the first axis
+#     name = "Branch Lengths",
+#     
+#     # Add a second axis and specify its features
+#     sec.axis = sec_axis(~.*coeff, name="Combinations")
+#   ) 
+# 
+#   ggtitle("Temperature down, price up")
+
+
+
+
+# Create a violin plot
+ggplot(data, aes(x=combinations, y=total_coverage)) + 
+  geom_violin(trim=FALSE) +  # Set trim=FALSE to not show data beyond the range
+  scale_y_continuous(limits=c(0, 100)) +  # Set y-axis limits from 0 to 100
+  labs(title='Violin Plot of Total Coverage for Each Combination',
+       x='Combinations',
+       y='Total Coverage (%)') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
+
+
+#--------
+# Assuming you have a dataframe 'df' with 'branch_length', 'species_coverage', and 'combinations'
+# And you have already fitted a linear model named 'fit'
+
+# Fit the linear regression model
+fit <- lm(species_coverage ~ branch_length, data = data)
+
+# Get summary of the model to extract R-squared and p-value
+summary_fit <- summary(fit)
+r_squared <- summary_fit$r.squared
+p_value <- coef(summary_fit)[2,4]
+
+# Create the scatter plot with regression line
+p <- ggplot(data, aes(x = branch_length, y = species_coverage, color = combinations)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") + # This line adds the line of best fit
+  labs(title = "Branch Length vs. Species Coverage with Regression Line",
+       x = "Branch Length",
+       y = "Species Coverage (%)")
+
+# Annotate with R-squared and p-value
+p + geom_text(aes(label = paste("R^2 =", format(r_squared, digits = 4),
+                               "\np-value =", format(p_value, digits = 4))),
+              x = Inf, y = Inf, hjust = 1, vjust = 1, color = "black", size = 3.5, position = position_nudge(x = -0.1, y = -0.1))
+
+```
+
+<br><br><br><br><br>
+
+## **Not as good graphs**
+
+```{r}
+
+# library(GGally)
+# data %>% select(species_coverage, total_coverage, branch_length, combinations) %>%  ggpairs()
+
+data %>% ggplot(aes(x = branch_length, y = species_coverage, color = combinations)) + geom_boxplot()
+
+data %>% ggplot(aes(x = branch_length, y = species_coverage, color = combinations)) + geom_violin()
+
+data %>% ggplot(aes(x = combinations, y = total_coverage, color = branch_length)) + geom_boxplot()
+
+# data %>% ggplot(aes(x = combinations, y = total_coverage, z = branch_length)) + 
+
+
+# ggplot(grouped_date_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+#   geom_bar(stat = 'identity', position = 'dodge') +
+#   ylim(0, 100) +
+#   labs(y = "Mean Species Coverage (%)", x = "Combinations") +
+#   facet_wrap(~ date, ncol = 1)
+```
+
+```{r}
+# box
+grouped_data <- data %>%
+  group_by(combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+
+ggplot(data) +
+  # Adding the "bar-lines"
+  geom_segment(data = grouped_data, aes(x = combinations, xend = combinations, y = 0, yend = mean_species_coverage, color = species), position = position_dodge(width = 0.9)) +
+  # Adding the individual data points
+  geom_boxplot(aes(x = combinations, y = species_coverage, color = species), position = position_dodge(width = 0.9)) +
+  ylim(0, 100) +
+  labs(title = "Species Coverage by Combinations", y = "Species Coverage (%)", x = "Combinations")
+```
+
+```{r}
+# Here is a bar chart with the combinations (this is an overall mean, so not too useful):
+grouped_data <- data %>%
+  group_by(combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+
+ggplot(grouped_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(title = "Mean Species Coverage by Combinations", y = "Mean Species Coverage (%)", x = "Combinations")
+
+# Unique dates (generates all 4 (you have to go back to view them all):
+unique_dates <- unique(data$date)
+
+#possibly removing the other thing; %>%  filter(data, date !== "2023-10-31")
+
+for(date in unique_dates){
+  date_data <- filter(data, date == !!date)
+  grouped_date_data <- date_data %>%
+    group_by(combinations, species) %>%
+    summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+  
+  p <- ggplot(grouped_date_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+    geom_bar(stat = 'identity', position = 'dodge') +
+    ylim(0, 100) +
+    labs(title = paste0("Mean Species Coverage by Combinations on ", date), y = "Mean Species Coverage (%)", x = "Combinations")
+  
+  print(p)
+}
+
+p
+
+
+# Oct 31st
+oct_31_data <- filter(data, date == "2023-10-31")
+grouped_oct_31_data <- oct_31_data %>%
+  group_by(combinations, species) %>%
+  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+
+ggplot(grouped_oct_31_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  ylim(0, 100) +
+  labs(title = "Mean Species Coverage by Combinations on October 31st, 2023", y = "Mean Species Coverage (%)", x = "Combinations")
+```
