@@ -61,7 +61,7 @@ body {
   margin: 15px;
   padding: 10px;
 }
-#all_visualizations_together {
+#all-visualizations-together {
   background-color: white;
   border-radius: 5px;
   margin: 15px;
@@ -748,3 +748,4 @@ ggplot(grouped_oct_31_data, aes(x = combinations, y = mean_species_coverage, fil
   ylim(0, 100) +
   labs(title = "Mean Species Coverage by Combinations on October 31st, 2023", y = "Mean Species Coverage (%)", x = "Combinations")
 ```
+
