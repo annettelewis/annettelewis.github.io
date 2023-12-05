@@ -7,7 +7,7 @@ output:
       collapsed: false
     self_contained: yes
     keep_md: no
-pagetitle: community_phylogeny_decomposition
+pagetitle: community_phylogeny_competition
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +19,7 @@ body {
   background-color: lightblue;
 }
 
-#title {
+#photos {
   background-color: white;
   border-radius: 5px;
   margin: 15px;
@@ -61,7 +61,7 @@ body {
   margin: 15px;
   padding: 10px;
 }
-#all-visualizations-together {
+#additional-information {
   background-color: white;
   border-radius: 5px;
   margin: 15px;
@@ -73,9 +73,58 @@ body {
   margin: 15px;
   padding: 10px;
 }
+
+<style>
+.scrollable-gallery {
+  overflow-x: auto; /* Horizontal scrolling */
+  white-space: nowrap; /* Keep images in a single line */
+  padding: 10px 0;
+}
+
+.scrollable-gallery img {
+  display: inline-block;
+  margin-right: 10px; /* Space between images */
+  vertical-align: middle;
+  width: 30%; /* Adjust image size as needed */
+}
+</style>
+
+<div class="scrollable-gallery">
 ```
 
 ## [Home](https://annettelewis.github.io/) | [About Me](https://annettelewis.github.io/about_me/) | [Projects](https://annettelewis.github.io/projects/)
+
+## **Photos**
+
+```{r photo-gallery, echo=FALSE, out.width='100%', fig.show='hold', out.extra='style="width:30%;"'}
+knitr::include_graphics("../../media/fungi/1.jpg")
+knitr::include_graphics("../../media/fungi/6.jpg")
+knitr::include_graphics("../../media/fungi/IMG_0179.jpg") #?
+knitr::include_graphics("../../media/fungi/5.jpg")
+knitr::include_graphics("../../media/fungi/img_0046.jpg")
+knitr::include_graphics("../../media/fungi/img_0132.jpg")
+knitr::include_graphics("../../media/fungi/img_0138.jpg")
+knitr::include_graphics("../../media/fungi/IMG_0132.jpg")
+knitr::include_graphics("../../media/fungi/IMG_0185.jpg")
+knitr::include_graphics("../../media/fungi/IMG_2443.jpg")
+knitr::include_graphics("../../media/fungi/IMG_3368.jpg")
+knitr::include_graphics("../../media/fungi/IMG_9990.jpg")
+knitr::include_graphics("../../media/fungi/IMG_0098.jpg")
+knitr::include_graphics("../../media/fungi/IMG_0084.jpg")
+knitr::include_graphics("../../media/fungi/IMG_0191.jpg")
+```
+
+</div>
+
+```{r}
+# additional photos, a lot of these don't work
+# knitr::include_graphics("../../media/fungi/IMG_9714.heic") #not owrking
+# knitr::include_graphics("../../media/fungi/IMG_9697.heic") #not owrking
+# knitr::include_graphics("../../media/fungi/3.jpg")
+# knitr::include_graphics("../../media/fungi/IMG_9892.heic")
+# knitr::include_graphics("../../media/fungi/4.jpg") #
+# knitr::include_graphics("../../media/fungi/3.jpg") #
+```
 
 ## **Abstract**
 
@@ -115,6 +164,7 @@ library(patchwork)
 library(dplyr)
 library(tidyr)
 library(gridExtra)
+library(easystats)
 theme_set(theme_minimal())
 ```
 
@@ -241,9 +291,6 @@ sd(results_gen_tbl$Branch_Length)
 *Our plan will be to stick with this one as the branch lengths here have a slightly larger standard deviation, but this difference is negligible*
 
 ## **Experimental results**
-This project will be continued, I will add updates when possible!
-
-General Results: 
 
 ```{r}
 new <- data.frame(
@@ -280,25 +327,11 @@ ggplotly(df)
 w1 <- df
 ```
 
-Non plotly graph (showing same thing)
-
-```{r}
-results_tbl %>%
-  ggplot(aes(x = reorder(Combination, Branch_Length, increasing = TRUE), y = Branch_Length)) +
-  geom_point() +
-  theme_classic() +
-  labs(title = "Branch length based on species combination",
-       x = "Species combination",
-       y = "Branch length")
-```
-
-*NOTE:* This will be compared to the actual experimental setup.
-
 ```{r}
 data <- read.csv("./Community_Diversity_Phylogeny_Decomposition - main_sheet.csv")
 ```
 
-### Line plot over time:
+### Line plot
 
 ```{r}
 # Week numbers
@@ -306,18 +339,16 @@ data <- data %>%
   arrange(date) %>%
   mutate(week = paste("Week", dense_rank(date) - 1))
 
-# Line plot over time:
-time_series_data <- data %>%
-  group_by(week, combinations, species) %>%
-  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
-
-ggplot(time_series_data, aes(x = week, y = mean_species_coverage, color = combinations, linetype = species)) +
-  geom_line(aes(group = interaction(combinations, species))) +
-  ylim(0, 100) +
-  labs(title = "Mean Species Coverage Over Time", y = "Mean Species Coverage (%)", x = "Week")
+# # Line plot over time:
+# time_series_data <- data %>%
+#   group_by(week, combinations, species) %>%
+#   summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
+# 
+# ggplot(time_series_data, aes(x = week, y = mean_species_coverage, color = combinations, linetype = species)) +
+#   geom_line(aes(group = interaction(combinations, species))) +
+#   ylim(0, 100) +
+#   labs(title = "Mean Species Coverage Over Time", y = "Mean Species Coverage (%)", x = "Week")
 ```
-
-Another line plot, not including individual species
 
 ```{r}
 # Line plot over time for combinations only:
@@ -331,7 +362,7 @@ ggplot(time_series_combinations, aes(x = week, y = mean_species_coverage, color 
   labs(title = "Mean Species Coverage Over Time by Combinations", y = "Mean Species Coverage (%)", x = "Week")
 ```
 
-### Comparison of coverage over time (highlighting individual species)
+### Individual species coverage
 
 ```{r}
 # Now you can use the 'week' column in your ggplot2 plots
@@ -396,9 +427,7 @@ q3 <- ggplot(grouped_week_data_bond, aes(x = combinations, y = mean_species_cove
 q3
 ```
 
-### Comparison of coverage over time (total)
-
-This one needs fixing (it's set up by date)
+### Total combination coverage
 
 ```{r}
 data$combinations <- as.character(data$combinations)
@@ -474,7 +503,7 @@ r3 <- ggplot(grouped_week_data_total, aes(x = combinations, y = mean_total_cover
 r3
 ```
 
-## **All visualizations together**
+## **Additional information**
 
 ```{r}
 q1 <- q1 + theme(axis.text.x = element_text(angle = 50, hjust = 1))
@@ -544,6 +573,44 @@ p2
 
 p1 + p2
 ```
+```{r}
+model <- lm(species_coverage ~ branch_length, data = data)
+
+# display equation with p-value and R^2 value
+coefficients <- coef(model)
+intercept <- coefficients[1]
+slope <- coefficients[2]
+r_squared <- summary(model)$r.squared
+p_value <- summary(model)$coefficients[2,4]
+
+equation_text <- paste("y = ", round(intercept, 2), " + ", round(slope, 2), "x\n",
+                       "R² = ", round(r_squared, 2), 
+                       ", p = ", formatC(p_value, format = "e", digits = 2))
+
+p2 <- ggplot(combination_data, aes(x = branch_length, y = species_coverage)) +
+  geom_point(aes(color = combinations), size = 4) +
+  geom_text(aes(label = combinations), nudge_y = 1, check_overlap = TRUE) +
+  labs(title = "Species Coverage by Branch Length",
+       x = "Branch Length",
+       y = "Species Coverage (%)") +
+  theme(legend.title = element_blank()) +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate("text", x = Inf, y = Inf, label = equation_text, hjust = 1, vjust = 1, size = 3.5)
+
+p2
+
+
+model1 <- lm(species_coverage ~ branch_length + combinations, data = data)
+model2 <- lm(total_coverage ~ branch_length + combinations, data = data)
+
+
+summary(model2)
+
+check_model(model1)
+check_model(model2)
+
+performance(model2)
+```
 
 ---
 
@@ -568,184 +635,4 @@ ggplot(combination_data, aes(x = branch_length, y = mean_species_coverage, size 
        x = "Branch Length",
        y = "Mean Species Coverage (%)") +
   theme(legend.title = element_blank())
-
-#--------- Phylogenetic tree (italicized)
- # Function to plot the tree and highlight the path to each species/combination
-plot_tree_with_paths <- function(nj_tree_rooted, species_combinations, outgroup_name) {
-  plot(nj_tree_rooted, show.tip.label = TRUE, cex = 0.6)
-  
-  # Function to find edges leading to a node
-  find_edges_to_node <- function(tree, node) {
-    if (is.na(match(node, tree$tip.label))) {
-      # Node is an internal node
-      which(apply(tree$edge, 1, function(x) x[2] == node))
-    } else {
-      # Node is a tip
-      which(apply(tree$edge, 1, function(x) any(x == match(node, tree$tip.label))))
-    }
-  }
-
-  for (combination in species_combinations) {
-    species_to_keep <- c(combination, outgroup_name)
-    sub_tree <- drop.tip(nj_tree_rooted, setdiff(nj_tree_rooted$tip.label, species_to_keep))
-    nodes_to_highlight <- sub_tree$tip.label
-    
-    # Highlight each edge leading to the species or combination
-    for (node in nodes_to_highlight) {
-      edges <- find_edges_to_node(nj_tree_rooted, node)
-      for (edge in edges) {
-        edge_coords <- nj_tree_rooted$edge[edge, ]
-        x <- nj_tree_rooted$xx[edge_coords]
-        y <- nj_tree_rooted$yy[edge_coords]
-        lines(x, y, col = "red", lwd = 2)
-      }
-    }
-  }
-}
-
-# Call the function to plot the tree with paths
-plot_tree_with_paths(nj_tree_rooted, species_combinations, outgroup_name)
 ```
-
-
-Look through this please:
-```{r}
-# ggplot(data, aes(y= total_coverage)) +
-#   
-#   geom_line( aes(x=branch_length), size=2, color="blue") + 
-#   geom_line( aes(x=combinations), size=2, color= "orange") +
-#   
-#   scale_x_continuous(
-#     
-#     # Features of the first axis
-#     name = "Branch Lengths",
-#     
-#     # Add a second axis and specify its features
-#     sec.axis = sec_axis(~.*coeff, name="Combinations")
-#   ) 
-# 
-#   ggtitle("Temperature down, price up")
-
-
-
-
-# Create a violin plot
-ggplot(data, aes(x=combinations, y=total_coverage)) + 
-  geom_violin(trim=FALSE) +  # Set trim=FALSE to not show data beyond the range
-  scale_y_continuous(limits=c(0, 100)) +  # Set y-axis limits from 0 to 100
-  labs(title='Violin Plot of Total Coverage for Each Combination',
-       x='Combinations',
-       y='Total Coverage (%)') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
-
-
-#--------
-# Assuming you have a dataframe 'df' with 'branch_length', 'species_coverage', and 'combinations'
-# And you have already fitted a linear model named 'fit'
-
-# Fit the linear regression model
-fit <- lm(species_coverage ~ branch_length, data = data)
-
-# Get summary of the model to extract R-squared and p-value
-summary_fit <- summary(fit)
-r_squared <- summary_fit$r.squared
-p_value <- coef(summary_fit)[2,4]
-
-# Scatter plot with regression line
-p <- ggplot(data, aes(x = branch_length, y = species_coverage, color = combinations)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") + # This line adds the line of best fit
-  labs(title = "Branch Length vs. Species Coverage with Regression Line",
-       x = "Branch Length",
-       y = "Species Coverage (%)")
-
-# Annotate with R-squared and p-value
-p + geom_text(aes(label = paste("R^2 =", format(r_squared, digits = 4),
-                               "\np-value =", format(p_value, digits = 4))),
-              x = Inf, y = Inf, hjust = 1, vjust = 1, color = "black", size = 3.5, position = position_nudge(x = -0.1, y = -0.1))
-
-```
-
-<br><br><br><br><br>
-
-## **Not as good graphs**
-
-```{r}
-
-# library(GGally)
-# data %>% select(species_coverage, total_coverage, branch_length, combinations) %>%  ggpairs()
-
-data %>% ggplot(aes(x = branch_length, y = species_coverage, color = combinations)) + geom_boxplot()
-
-data %>% ggplot(aes(x = branch_length, y = species_coverage, color = combinations)) + geom_violin()
-
-data %>% ggplot(aes(x = combinations, y = total_coverage, color = branch_length)) + geom_boxplot()
-
-# data %>% ggplot(aes(x = combinations, y = total_coverage, z = branch_length)) + 
-
-
-# ggplot(grouped_date_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
-#   geom_bar(stat = 'identity', position = 'dodge') +
-#   ylim(0, 100) +
-#   labs(y = "Mean Species Coverage (%)", x = "Combinations") +
-#   facet_wrap(~ date, ncol = 1)
-```
-
-```{r}
-# box
-grouped_data <- data %>%
-  group_by(combinations, species) %>%
-  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
-
-ggplot(data) +
-  geom_segment(data = grouped_data, aes(x = combinations, xend = combinations, y = 0, yend = mean_species_coverage, color = species), position = position_dodge(width = 0.9)) +
-  geom_boxplot(aes(x = combinations, y = species_coverage, color = species), position = position_dodge(width = 0.9)) +
-  ylim(0, 100) +
-  labs(title = "Species Coverage by Combinations", y = "Species Coverage (%)", x = "Combinations")
-```
-
-```{r}
-# Here is a bar chart with the combinations (this is an overall mean, so not too useful):
-grouped_data <- data %>%
-  group_by(combinations, species) %>%
-  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
-
-ggplot(grouped_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
-  geom_bar(stat = 'identity', position = 'dodge') +
-  ylim(0, 100) +
-  labs(title = "Mean Species Coverage by Combinations", y = "Mean Species Coverage (%)", x = "Combinations")
-
-# Unique dates (generates all 4 (you have to go back to view them all):
-unique_dates <- unique(data$date)
-
-#possibly removing the other thing; %>%  filter(data, date !== "2023-10-31")
-
-for(date in unique_dates){
-  date_data <- filter(data, date == !!date)
-  grouped_date_data <- date_data %>%
-    group_by(combinations, species) %>%
-    summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
-  
-  p <- ggplot(grouped_date_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
-    geom_bar(stat = 'identity', position = 'dodge') +
-    ylim(0, 100) +
-    labs(title = paste0("Mean Species Coverage by Combinations on ", date), y = "Mean Species Coverage (%)", x = "Combinations")
-  
-  print(p)
-}
-
-p
-
-
-# Oct 31st
-oct_31_data <- filter(data, date == "2023-10-31")
-grouped_oct_31_data <- oct_31_data %>%
-  group_by(combinations, species) %>%
-  summarise(mean_species_coverage = mean(species_coverage, na.rm = TRUE))
-
-ggplot(grouped_oct_31_data, aes(x = combinations, y = mean_species_coverage, fill = species)) +
-  geom_bar(stat = 'identity', position = 'dodge') +
-  ylim(0, 100) +
-  labs(title = "Mean Species Coverage by Combinations on October 31st, 2023", y = "Mean Species Coverage (%)", x = "Combinations")
-```
-
