@@ -12,10 +12,13 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 ## Projects
 
-### Data Science for Biologists: [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)
-```{r, out.width= 250, out.height= 250}
-knitr::include_graphics("../media/Thumbnail_finalproject.png") 
-# 1410 x 1266
+### Microbiome - Pando Aspen Clone Foliar Fungal Diversity: [In Progress](https://annettelewis.github.io/projects/BIOL_490R_project)
+
+---
+
+### Mycology: [Research Project](https://annettelewis.github.io/projects/BOT_3500/)
+```{r}
+knitr::include_graphics("./BOT_3500/Screenshot 2023-10-01 at 9.37.35 PM.png") 
 ``` 
 
 ---
@@ -25,13 +28,14 @@ knitr::include_graphics("../media/Thumbnail_finalproject.png")
 knitr::include_graphics("../media/final.casp.big.png") 
 ``` 
 
-
 ---
 
-### Mycology: [Research Project](https://annettelewis.github.io/projects/BOT_3500/)
-```{r}
-knitr::include_graphics("./BOT_3500/Screenshot 2023-10-01 at 9.37.35 PM.png") 
+### Data Science for Biologists: [Final Project](https://annettelewis.github.io/projects/BIOL_3100_final_project/)
+```{r, out.width= 250, out.height= 250}
+knitr::include_graphics("../media/Thumbnail_finalproject.png") 
+# 1410 x 1266
 ``` 
+
 
 
 ```{bash, message = FALSE, include = FALSE}
